@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "240470249624",
+    "project_id": "bike-place-f48de",
+    "storage_bucket": "bike-place-f48de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240470249624:android:9c8919ac0e0610343880ed",
+        "android_client_info": {
+          "package_name": "me.ipsum_amet.bikeplace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "240470249624-n8a359nlufmikogtepaoaj2k4ppqbfbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv1O_K6vOb3BUsrx1KWoq0f5ncMIGEhyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "240470249624-n8a359nlufmikogtepaoaj2k4ppqbfbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
