@@ -6,14 +6,18 @@ const val APP_ID = "bike_place_app-vcqtd"
 
 
 const val REGISTER_SCREEN = "register"
-const val SIGNUP_SCREEN = "signUp/{username}"
+const val SIGNIN_SCREEN = "signIn"
+const val RESET_PASSWORD_SCREEN = "resetPassword"
 const val LIST_SCREEN = "list/{action}"
-const val BIKE_SCREEN = "task/{taskId}"
+const val BIKE_SCREEN = "bike/{bikeId}"
 
 const val LIST_ARGUMENT_KEY = "action"
-const val BIKE_ARGUMENT_KEY = "taskId"
-const val REGISTER_ARGUMENT_KEY = ""
-const val SIGNUP_ARGUMENT_KEY = ""
+const val BIKE_ARGUMENT_KEY = "bikeId"
+const val SIGNIN_ARGUMENT_KEY = ""
+
+const val USERS = "users"
+const val BIKES = "bikes"
+
 
 
 

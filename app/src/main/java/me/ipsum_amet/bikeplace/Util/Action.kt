@@ -7,6 +7,8 @@ enum class Action {
     DELETE_ALL,
     UNDO,
     NO_ACTION,
+    LOG_OUT,
+    GET_ALL_BIKES
 }
 
 fun String?.toAction(): Action {
@@ -25,6 +27,9 @@ fun String?.toAction(): Action {
         }
         this == "UNDO" -> {
             Action.UNDO
+        }
+        this == "GET_ALL_BIKES" -> {
+            Action.GET_ALL_BIKES
         }
         else -> {
             Action.NO_ACTION

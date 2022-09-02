@@ -1,35 +1,52 @@
 package me.ipsum_amet.bikeplace.navigation
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.LIST_SCREEN
-import me.ipsum_amet.bikeplace.Util.SIGNUP_SCREEN
+import androidx.navigation.navDeepLink
+import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 class Screens(navController: NavController) {
 
     val register: () -> Unit = {
-        navController.navigate(route = "signUp") {
+        navController.navigate(route = "signIn") {
+            popUpTo(REGISTER_SCREEN) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
+    val signIn: () -> Unit = {
+        navController.navigate(route = "register") {
+            popUpTo(SIGNIN_SCREEN) { inclusive = true }
+            launchSingleTop = true
 
         }
     }
 
-    val signUp: (Action) -> Unit = {  action: Action -> Unit
+    val reset: () -> Unit = {
+       navController.navigate(route = "resetPassword") {
+           popUpTo(RESET_PASSWORD_SCREEN) { inclusive = true }
+           launchSingleTop = true
+
+       }
+    }
+
+    val list: (String) -> Unit = { bikeId: String ->
+        navController.navigate("bike/$bikeId") {
+            popUpTo(LIST_SCREEN) { inclusive = false }
+            launchSingleTop = true
+
+        }
+    }
+
+    val bike: (Action) -> Unit = { action: Action ->
         navController.navigate("list/${action.name}") {
-            popUpTo(SIGNUP_SCREEN) {
+            popUpTo(SIGNIN_SCREEN) {
                 inclusive = true
             }
+            launchSingleTop = true
         }
-    }
-
-    val list: (Action) -> Unit = { action: Action ->
-        navController.navigate("list/${action.name}") {
-            popUpTo(LIST_SCREEN) {
-                inclusive = true
-            }
-        }
-    }
-
-    val bike: (Int) -> Unit = { bikeId: Int ->
-        navController.navigate("bike/$bikeId")
     }
 }

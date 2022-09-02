@@ -1,5 +1,6 @@
 package me.ipsum_amet.bikeplace.di
 
+import me.ipsum_amet.bikeplace.data.db.remote.FayaBase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,23 +12,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import io.realm.kotlin.Realm
-import io.realm.kotlin.log.LogLevel
-import io.realm.kotlin.mongodb.App
-import io.realm.kotlin.mongodb.AppConfiguration
-import io.realm.kotlin.mongodb.Credentials
-import io.realm.kotlin.mongodb.sync.SyncConfiguration
-import me.ipsum_amet.bikeplace.Util.APP_ID
-import me.ipsum_amet.bikeplace.Util.REALM_DB_NAME
-import me.ipsum_amet.bikeplace.data.db.RealmDB
-import me.ipsum_amet.bikeplace.data.model.User
-import javax.inject.Singleton
+import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object AppModule {
-
-
   @Provides
   fun provideAuthentication(): FirebaseAuth = Firebase.auth
 
@@ -36,4 +25,12 @@ object AppModule {
 
   @Provides
   fun provideStorage(): FirebaseStorage = Firebase.storage
+
+  @Provides
+  fun provideDBRemoteFayaBase(
+    auth: FirebaseAuth, db: FirebaseFirestore, storage: FirebaseStorage
+  ) = FayaBase(auth = auth, db = db, storage = storage)
+
+  @Provides
+  fun provideBikePlaceRepo(fayaBase: FayaBase) = BikePlaceRepository(fayaBase = fayaBase)
 }

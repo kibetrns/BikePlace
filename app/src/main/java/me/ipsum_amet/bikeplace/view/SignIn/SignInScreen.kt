@@ -8,9 +8,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -19,18 +23,31 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.*
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
+import me.ipsum_amet.bikeplace.view.bike.displayToast
+import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var password by remember { mutableStateOf("") }
+fun SignInScreen(
+    navigateToRegisterScreen: () -> Unit,
+    navigateToListScreen: (Action) -> Unit,
+    navigateToResetPasswordScreen: () -> Unit,
+    bikePlaceViewModel: BikePlaceViewModel
+) {
+    var password by remember { bikePlaceViewModel.password }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    var emailAddress by remember { mutableStateOf("")}
+    var emailAddress by remember { bikePlaceViewModel.emailAddress}
+
+    val alreadyLoggedIn = remember { bikePlaceViewModel.alreadyLoggedIn }
+    val signedIn = bikePlaceViewModel.signedIn.value
+
+    val context = LocalContext.current
+
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -63,7 +80,7 @@ fun LoginScreen(navController: NavController) {
             )
             OutlinedTextField(
                 value = emailAddress,
-                onValueChange = { emailAddress = it },
+                onValueChange = { bikePlaceViewModel.emailAddress.value = it },
                 label = { Text(stringResource(id = R.string.enter_email_address)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.email_address)) },
@@ -72,7 +89,7 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { bikePlaceViewModel.password.value = it },
                 label = { Text(stringResource(id = R.string.enter_password)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.password)) },
@@ -95,18 +112,28 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             Button(
                 onClick = {
-
+                    if (bikePlaceViewModel.validateSignInFields()) {
+                        bikePlaceViewModel.loginUser(
+                            emailAddress = bikePlaceViewModel.emailAddress.value,
+                            password = bikePlaceViewModel.password.value
+                        )
+                        if (signedIn && !alreadyLoggedIn.value) {
+                            alreadyLoggedIn.value = true
+                           navigateToListScreen(Action.NO_ACTION)
+                            //navigateToListScreen(Action.GET_ALL_BIKES)
+                        }
+                    } else {
+                        displayToast(context = context, "Fill in all Field(s) to Proceed")
+                    }
                 }
             ) {
-                Text(text = stringResource(id = R.string.login))
+                Text(text = stringResource(id = R.string.sign_in))
             }
             Spacer(modifier = Modifier.height(XL_PADDING))
             TextButton(
                 onClick = {
-                navController.navigate("register_page"){
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
+
+                    navigateToRegisterScreen()
             }) {
                Text(
                     text = stringResource(id = R.string.create_account),
@@ -117,10 +144,7 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             TextButton(
                 onClick = {
-                    navController.navigate("register_page"){
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
-                    }
+                    navigateToResetPasswordScreen()
                 }) {
                 Text(
                     text = stringResource(id = R.string.reset_password),
@@ -137,7 +161,13 @@ fun LoginScreen(navController: NavController) {
 @Composable
 fun PLoginScreen() {
     val navController = rememberNavController()
+    val vm = hiltViewModel<BikePlaceViewModel>()
     BikePlaceTheme {
-        LoginScreen(navController)
+        SignInScreen(
+            navigateToRegisterScreen = {},
+            navigateToListScreen = {},
+            navigateToResetPasswordScreen = {},
+            bikePlaceViewModel = vm
+        )
     }
 }

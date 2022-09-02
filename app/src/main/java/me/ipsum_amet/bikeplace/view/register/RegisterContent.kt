@@ -1,5 +1,6 @@
-package me.ipsum_amet.bikeplace
+package me.ipsum_amet.bikeplace.view.register
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,11 +10,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -22,21 +28,32 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import me.ipsum_amet.bikeplace.Util.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import me.ipsum_amet.bikeplace.R
+import me.ipsum_amet.bikeplace.Util.L_PADDING
+import me.ipsum_amet.bikeplace.Util.SIGN_IN_IMAGE_HEIGHT
+import me.ipsum_amet.bikeplace.Util.XL_PADDING
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
+import me.ipsum_amet.bikeplace.view.bike.displayToast
+import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-    var password by rememberSaveable { mutableStateOf("") }
-    var confirmedPassword by rememberSaveable { mutableStateOf("")}
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
-
-    var emailAddress by rememberSaveable { mutableStateOf("") }
-    var fullName by rememberSaveable { mutableStateOf("") }
-
-    var phoneNumber by rememberSaveable { mutableStateOf("")}
+fun RegisterContent(
+    fullName: String,
+    onFullNameChange: (String) -> Unit,
+    emailAddress: String,
+    onEmailAddressChange: (String) -> Unit,
+    phoneNumber: String,
+    onPhoneNumberChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    confirmedPassword: String,
+    bikePlaceViewModel: BikePlaceViewModel,
+    onConfirmedPasswordChange: (String) -> Unit,
+    navigateToSignInScreen: () -> Unit,
+    isLoading: Boolean,
+    context: Context
+) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,9 +62,14 @@ fun RegisterScreen(navController: NavController) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        if(isLoading) {
+            CircularProgressIndicator()
+        }
         Image(
             painter = painterResource(id = R.drawable.user_reg),
-            contentDescription = stringResource(id = R.string.sign_in_image),
+            contentDescription = stringResource(
+                id = R.string.sign_in_image
+            ),
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .height(SIGN_IN_IMAGE_HEIGHT)
@@ -58,6 +80,8 @@ fun RegisterScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            var passwordVisible by rememberSaveable { mutableStateOf(false) }
+            val focus = LocalFocusManager.current
             Text(
                 text = stringResource(id = R.string.register),
                 textAlign = TextAlign.Center,
@@ -69,7 +93,7 @@ fun RegisterScreen(navController: NavController) {
             )
             OutlinedTextField(
                 value = fullName,
-                onValueChange = { fullName = it },
+                onValueChange = { onFullNameChange(it) },
                 label = { Text(stringResource(id = R.string.enter_full_name)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.full_name)) },
@@ -78,7 +102,7 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             OutlinedTextField(
                 value = emailAddress,
-                onValueChange = { emailAddress = it },
+                onValueChange = { onEmailAddressChange(it) },
                 label = { Text(stringResource(id = R.string.enter_email_address)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.email_address)) },
@@ -87,7 +111,7 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             OutlinedTextField(
                 value = phoneNumber,
-                onValueChange = { phoneNumber = it },
+                onValueChange = { onPhoneNumberChange(it) },
                 label = { Text(stringResource(id = R.string.enter_phone_number)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.phone_number)) },
@@ -96,7 +120,7 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { onPasswordChange(it) },
                 label = { Text(stringResource(id = R.string.enter_password)) },
                 singleLine = true,
                 placeholder = { Text(stringResource(id = R.string.password)) },
@@ -119,10 +143,10 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(L_PADDING))
             OutlinedTextField(
                 value = confirmedPassword,
-                onValueChange = { confirmedPassword = it },
+                onValueChange = { onConfirmedPasswordChange(it) },
                 label = { Text(stringResource(id = R.string.confirm_password)) },
                 singleLine = true,
-                placeholder = { Text(stringResource(id = R.string.confirm_password)) },
+                placeholder = { Text(stringResource(id = R.string.password)) },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
@@ -139,10 +163,20 @@ fun RegisterScreen(navController: NavController) {
                     }
                 }
             )
-            Spacer(modifier = Modifier.height(L_PADDING))
             Button(
                 onClick = {
-
+                    focus.clearFocus(force = true)
+                    if(bikePlaceViewModel.validateRegistrationFields()) {
+                        if(bikePlaceViewModel.validateSamePassword()) {
+                            bikePlaceViewModel.registerUser()
+                            navigateToSignInScreen()
+                            displayToast(context = context, "If Account Creation Successful, Sign In Using Created Account")
+                        } else {
+                            displayToast(context = context, "Passwords DOESN'T Match")
+                        }
+                    } else {
+                        displayToast(context = context, "Fill in All Field(s) to Proceed")
+                    }
                 }
             ) {
                 Text(text = stringResource(id = R.string.sign_up))
@@ -150,26 +184,44 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(XL_PADDING))
             TextButton(
                 onClick = {
-                    navController.navigate("register_page") {
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
-                    }
+                    navigateToSignInScreen()
                 }) {
                 Text(
-                    text = stringResource(id = R.string.sign_in),
+                    text = stringResource(id = R.string.sign_in_instead),
                     letterSpacing = 1.sp,
                     style = MaterialTheme.typography.subtitle1
                 )
             }
         }
+
     }
+
+
+
+
 }
 
-@Preview(name = "Register Screen", showBackground = true)
+@Preview(name = "RegisterContent", showBackground = true, showSystemUi = true)
 @Composable
-fun PRegisterScreen() {
-    val navController = rememberNavController()
-    BikePlaceTheme {
-        RegisterScreen(navController)
+fun PRegisterContent() {
+    val vm = hiltViewModel<BikePlaceViewModel>()
+
+    BikePlaceTheme() {
+        RegisterContent(
+            fullName = "",
+            onFullNameChange = {},
+            emailAddress = "",
+            onEmailAddressChange = {},
+            phoneNumber = "",
+            onPhoneNumberChange = {},
+            password = "",
+            onPasswordChange = {},
+            confirmedPassword = "",
+            bikePlaceViewModel = vm,
+            onConfirmedPasswordChange = {},
+            navigateToSignInScreen = {},
+            isLoading = false,
+            context = LocalContext.current
+        )
     }
 }

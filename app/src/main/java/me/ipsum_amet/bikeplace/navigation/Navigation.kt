@@ -5,32 +5,37 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import me.ipsum_amet.bikeplace.Util.REGISTER_SCREEN
-import me.ipsum_amet.bikeplace.navigation.destinations.bikeComposable
-import me.ipsum_amet.bikeplace.navigation.destinations.listComposable
-import me.ipsum_amet.bikeplace.navigation.destinations.registerComposable
-import me.ipsum_amet.bikeplace.navigation.destinations.signUpComposable
+import me.ipsum_amet.bikeplace.navigation.destinations.*
+import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 @Composable
-fun SetUpNavigation(navController: NavHostController) {
+fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePlaceViewModel) {
     val screen = remember(navController) {
         Screens(navController = navController)
     }
-    
+
     NavHost(navController = navController, startDestination = REGISTER_SCREEN) {
         registerComposable(
-            navigateToSignUpScreen = screen.signUp
+            navigateToSignInScreen = screen.register,
+            bikePlaceViewModel = bikePlaceViewModel
         )
-        signUpComposable(
-            navigateToListScreen = screen.list
+        signInComposable(
+            navigateToRegisterScreen = screen.signIn,
+            navigateToListScreen = screen.bike,
+            navigateToResetPasswordScreen = screen.reset,
+            bikePlaceViewModel = bikePlaceViewModel,
+        )
+        resetPasswordComposable(
+            navigateToRegisterScreen = screen.signIn
         )
         listComposable(
-            navigateToBikeScreen = screen.bike
+            bikePlaceViewModel = bikePlaceViewModel,
+            navigateToBikeScreen = screen.list,
         )
-        bikeComposable(navigateToListScreen = screen.list)
-
-
-
+        bikeComposable(
+            navigateToListScreen = screen.bike,
+            bikePlaceViewModel = bikePlaceViewModel
+        )
     }
-
 
 }
