@@ -61,7 +61,8 @@ fun ListAppBar(
                     bikePlaceViewModel.searchTextState.value = ""
                 },
                 onSearchClicked = {
-
+                    bikePlaceViewModel.searchAppBarState.value = SearchAppBarState.TRIGGERED
+                    bikePlaceViewModel.searchDB(it)
                 }
             )
         }

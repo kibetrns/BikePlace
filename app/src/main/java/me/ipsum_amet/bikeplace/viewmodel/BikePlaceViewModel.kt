@@ -15,10 +15,7 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.Util.*
 import me.ipsum_amet.bikeplace.data.model.Bike
@@ -335,23 +332,98 @@ class BikePlaceViewModel @Inject constructor(
 
 
     }
+    fun getAllBikes() {
+        _allBikes.value = RequestState.Loading
+        Log.d("getAllBikesVM", _allBikes.value.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBikesAsFlow()
+                .onStart {
+                    Log.d("getAllBikesVM", "Started Collecting All Bikes As Flow")
+                    Log.d("getAllBikesVM", _allBikes.value.toString())
+                }
+                .onEach {
+                    Log.d("getAllBikesVM", it.toString())
+                    Log.d("getAllBikesVM", _allBikes.value.toString())
+                }
+                .catch {  ex ->
+                    Log.d("getAllBikesVM", "Exception Caught: ${ex.message}")
+                }
+                .onCompletion { cause: Throwable? ->
+                    if (cause != null )
+                        Log.d("getAllBikesVM", """Flow completed with message "${cause.message}" """)
+                    else
+                        Log.d("getAllBikesVM", _allBikes.value.toString())
+                }
+                .collect() {
+                    _allBikes.value = RequestState.Success(it)
+                    Log.d("getAllBikesVM", "Flow Completed Successfully")
+                    Log.d("getAllBikesVM", _allBikes.value.toString())
+                }
+        }
 
+    }
+/*
    fun getAllBikes() {
        _allBikes.value = RequestState.Loading
+       Log.d("getAllBikesVM", _allBikes.value.toString())
        try {
            viewModelScope.launch(Dispatchers.IO) {
                _allBikes.value = RequestState.Success(repository.getAllBikes())
+               Log.d("getAllBikesVM", _allBikes.value.toString())
            }
        } catch (ex: Exception) {
            _allBikes.value = RequestState.Error(ex)
        }
    }
 
+ */
+    fun searchDB(query: String){
+    _searchedBikes.value = RequestState.Loading
+    Log.d("searchDBVM", _allBikes.value.toString())
+    viewModelScope.launch(Dispatchers.IO) {
+        repository.getBikesNameAsFlow(query)
+            .onStart {
+                Log.d("searchDBVM", _searchedBikes.value.toString())
+                Log.d("searchDBVM", _searchedBikes.value.toString())
+            }
+            .onEach {
+                Log.d("searchDBVM", it.toString())
+                Log.d("searchDBVM", _searchedBikes.value.toString())
+            }
+            .catch { ex ->
+                Log.d("searchDBVM", "Exception Caught: ${ex.message}")
+            }
+            .onCompletion { cause: Throwable? ->
+                if (cause != null)
+                    Log.d("searchDBVM", """Flow completed with message "${cause.message}" """)
+                else
+                    Log.d("searchDBVM", _searchedBikes.value.toString())
+            }
+            .collect() {
+                _searchedBikes.value = RequestState.Success(it)
+                Log.d("searchDBVM", "Flow Completed Successfully")
+                Log.d("searchDBVM", _searchedBikes.value.toString())
+            }
+    }
+}
 
-
+/*
     fun searchDB(searchQuery: String) {
+        _searchedBikes.value = RequestState.Loading
+        Log.d("searchedBikesVM", _searchedBikes.value.toString())
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+
+                _searchedBikes.value = RequestState.Success(repository.getBikesByName(searchQuery))
+                Log.d("searchedBikesVM", _searchedBikes.value.toString())
+            }
+        } catch (ex: Exception) {
+            _searchedBikes.value = RequestState.Error(ex)
+            Log.d("searchedBikesVM", _searchedBikes.value.toString())
+        }
 
     }
+    */
 
     fun updateOrAddBike(
         bikeId: String? = null,
@@ -485,6 +557,7 @@ class BikePlaceViewModel @Inject constructor(
             bikeImageUrl.value = ""
             bikePrice.value = ""
         } else {
+            delay(7000)
             bikeName.value = selectedBike.name.toString()
             bikeType.value = selectedBike.type!!
             bikeCondition.value = selectedBike.condition!!

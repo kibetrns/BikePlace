@@ -22,6 +22,7 @@
     <string name="kes">KES</string>
     <string name="bike_description">Bike Description</string>
     <string name="empty_content">No Bikes Posted Yet</string>
+    <string name="error_message_icon">Error Message Icon</string>
     <string name="search">Search</string>
     <string name="search_task_icon">Search Tasks Icon</string>
     <string name="close_icon">Close Icon</string>
@@ -49,4 +50,5 @@
     <string name="bike_image">Bike Image</string>
     <string name="image_placeholder">Image Placeholder</string>
     <string name="add_photo">Add Photo</string>
+
 </resources>

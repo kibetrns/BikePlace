@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.*
 import coil.request.ImageRequest
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.components.Message
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.data.model.CONDITION
@@ -48,12 +53,36 @@ fun ListContent(
             )
         }
     } else {
-        if (allBikes is RequestState.Success) {
+        when( allBikes ) {
+            RequestState.Loading -> {
+                ProgressBox()
+            }
+            RequestState.Idle -> {
+                ProgressBox()
+            }
+            else -> {
+                if ( allBikes is RequestState.Success ) {
+                    HandleListContent(
+                        bikes = allBikes.data,
+                        navigateToBikeScreen = navigateToBikeScreen
+                    )
+                } else if ( allBikes is RequestState.Error ) {
+                    Message(message = "Error while Listing Bikes.")
+                }
+            }
+        }
+        /*
+        if ( allBikes is RequestState.Loading || allBikes is RequestState.Idle) {
+            ProgressBox()
+        } else if (allBikes is RequestState.Success) {
             HandleListContent(
                 bikes = allBikes.data,
                 navigateToBikeScreen = navigateToBikeScreen
             )
+        } else if ( allBikes is RequestState.Error ) {
+
         }
+        */
     }
 }
 
@@ -63,7 +92,7 @@ fun HandleListContent(
     navigateToBikeScreen: (bikeId: String) -> Unit
 ) {
     if (bikes.isEmpty()) {
-        EmptyContent()
+        Message(message = "No Bikes Posted with inputted query or No Bikes Posted Yet")
     } else {
         DisplayBikes(
             bikes = bikes,

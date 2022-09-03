@@ -1,5 +1,6 @@
 package me.ipsum_amet.bikeplace.view.list
 
+import android.util.Log
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,7 +13,7 @@ import me.ipsum_amet.bikeplace.Util.Action
 
 @Composable
 fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikePlaceViewModel) {
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = true){
         bikePlaceViewModel.getAllBikes()
     }
 
@@ -24,7 +25,9 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
     val scaffoldState = rememberScaffoldState()
 
     val allBikes by bikePlaceViewModel.allBikes.collectAsState()
+    Log.d("lSAllBikes", allBikes.toString())
     val searchedBikes by bikePlaceViewModel.searchedBikes.collectAsState()
+    Log.d("lSSearchedBikes", searchedBikes.toString())
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
