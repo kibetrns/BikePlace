@@ -270,7 +270,32 @@ class BikePlaceViewModel @Inject constructor(
             }
         inProgress.value = false
     }
+    fun getSelectedBike(bikeId: String) {
+        Log.d("getSelectedBikeVM", _selectedBike.value.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getBikeByIdAsFlow(bikeId)
+                .onStart {
+                    Log.d("getSelectedBikeVM", "Started Collecting All Bikes As Flow")
+                    Log.d("getAllSelectedVM", _selectedBike.value.toString())
+                }
+                .catch { ex ->
+                    Log.d("getSelectedBikeVM", "Exception Caught: ${ex.message}")
+                }
+                .onCompletion { cause: Throwable? ->
+                    if (cause != null )
+                        Log.d("getAllBikesVM", """Flow completed with message "${cause.message}" """)
+                    else
+                        Log.d("getAllBikesVM", _allBikes.value.toString())
+                }
+                .collect() {
+                    _selectedBike.value = it
+                    Log.d("getAllBikesVM", "Flow Completed Successfully")
+                    Log.d("getSelectedBikeVM", _selectedBike.value.toString())
+                }
+        }
+    }
 
+    /*
     fun getSelectedBike(bikeId: String) {
             try {
                 _selectedBike.value = repository.getBikeById(bikeId)
@@ -279,6 +304,10 @@ class BikePlaceViewModel @Inject constructor(
                 Log.w("main", "Error While Getting Selected Bike", ex)
             }
     }
+
+     */
+
+
 
     fun loginUser(emailAddress: String, password: String) {
         inProgress.value = true

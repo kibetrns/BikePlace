@@ -90,6 +90,25 @@ class FayaBase @Inject constructor(
 
     }
 
+    suspend fun getBikeByIdAsFlow(bikeId: String): Flow<Bike> {
+        return callbackFlow {
+            db.collection(BIKES)
+                .whereEqualTo("bikeId", bikeId)
+                .get()
+                .addOnSuccessListener { documents: QuerySnapshot ->
+                    for ( document in documents ) {
+                        trySend(document.toObject<Bike>())
+                    }
+                }
+                .addOnFailureListener { ex: Exception ->
+                    Log.w("main", "Error getting Bike by Name As Flow", ex)
+                }
+            awaitClose {
+
+            }
+        }
+    }
+
     fun getBikesByName(query: String): List<Bike> {
         val listByName = mutableListOf<Bike>()
 
