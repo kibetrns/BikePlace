@@ -292,6 +292,7 @@ class BikePlaceViewModel @Inject constructor(
                     Log.d("getAllBikesVM", "Flow Completed Successfully")
                     Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
+
         }
     }
 
@@ -574,25 +575,26 @@ class BikePlaceViewModel @Inject constructor(
         }
         this.action.value = Action.NO_ACTION
     }
+    fun updateSelectedBikeState() {
+        _selectedBike.value = null
+    }
 
 
-    suspend fun updateBikeFields(selectedBike: Bike?) {
-
-        if ( selectedBike == null) {
-            bikeName.value = ""
-            bikeType.value = TYPE.BMX
-            bikeCondition.value = CONDITION.AVERAGE
-            bikeDescription.value = ""
-            bikeImageUrl.value = ""
-            bikePrice.value = ""
-        } else {
-            delay(7000)
+    fun updateBikeFields(selectedBike: Bike?) {
+        if ( selectedBike != null ) {
             bikeName.value = selectedBike.name.toString()
             bikeType.value = selectedBike.type!!
             bikeCondition.value = selectedBike.condition!!
             bikeDescription.value = selectedBike.description.toString()
             bikeImageUrl.value = selectedBike.imageUrl.toString()
             bikePrice.value = selectedBike.price.toString()
+        } else {
+            bikeName.value = ""
+            bikeType.value = TYPE.BMX
+            bikeCondition.value = CONDITION.AVERAGE
+            bikeDescription.value = ""
+            bikeImageUrl.value = ""
+            bikePrice.value = ""
         }
     }
 

@@ -58,7 +58,7 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
             )
         },
         floatingActionButton = {
-            ListFab(onFabClicked = navigateToBikeScreen)
+            ListFab(onFabClicked = navigateToBikeScreen,bikePlaceViewModel)
         }
     )
 }
@@ -66,15 +66,15 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
 
 
 @Composable
-fun ListFab(onFabClicked: (String) -> Unit) {
+fun ListFab(onFabClicked: (String) -> Unit, bikePlaceViewModel: BikePlaceViewModel) {
     FloatingActionButton(onClick = {
+        bikePlaceViewModel.updateSelectedBikeState()
         onFabClicked("FIRST")
     }) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = stringResource(id = R.string.add_FAB)
         )
-
     }
 }
 @Composable

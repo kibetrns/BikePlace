@@ -176,8 +176,9 @@ fun BikeItem(
                    SubcomposeAsyncImageContent(
                        alignment = Alignment.Center,
                        modifier = Modifier
-                           .fillMaxWidth()
                            .height(BIkE_CARD_IMAGE_HEIGHT)
+                           .fillMaxWidth(),
+                       contentScale = ContentScale.Crop
                    )
                }
            }

@@ -26,8 +26,11 @@ fun NavGraphBuilder.bikeComposable(
     ) { navBackStackEntry ->
         val bikeId = navBackStackEntry.arguments?.getString(BIKE_ARGUMENT_KEY)
 
+
         if (bikeId != null) {
-            bikePlaceViewModel.getSelectedBike(bikeId = bikeId)
+            LaunchedEffect(key1 = bikeId) {
+                bikePlaceViewModel.getSelectedBike(bikeId = bikeId)
+            }
         }
         val selectedBike by bikePlaceViewModel.selectedBike.collectAsState()
 
