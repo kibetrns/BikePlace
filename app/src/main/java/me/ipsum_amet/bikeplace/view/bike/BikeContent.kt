@@ -46,10 +46,14 @@ fun BikeContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colors.background)
-            .padding(L_PADDING)
+            .padding(L_PADDING),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
 
 
     ) {
+        BrowseBikeImage(imageUrl = imageUrl, modifier = Modifier, onImageClicked = onImageClicked)
+
         OutlinedTextField(
             value = name,
             onValueChange = { onTitleChange(it) },
@@ -60,11 +64,11 @@ fun BikeContent(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(M_PADDING))
+
         TypeDropDown(type = type, onTypeSelected = { onTypeSelected(it) })
-        Spacer(modifier = Modifier.height(M_PADDING))
+
         ConditionDropDown(condition = condition, onConditionSelected = { onConditionSelected(it) })
-        Spacer(modifier = Modifier.height(M_PADDING))
+
         OutlinedTextField(
             value = price,
             onValueChange = { onPriceChange(it) },
@@ -75,9 +79,7 @@ fun BikeContent(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(M_PADDING))
-        BrowseBikeImage(imageUrl = imageUrl, modifier = Modifier, onImageClicked = onImageClicked)
-        Spacer(modifier = Modifier.height(M_PADDING))
+
         OutlinedTextField(
             value = description,
             onValueChange = { onDescriptionChange(it) },
