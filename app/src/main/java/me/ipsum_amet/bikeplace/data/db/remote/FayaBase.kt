@@ -8,12 +8,9 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.Util.BIKES
 import me.ipsum_amet.bikeplace.Util.USERS
 import me.ipsum_amet.bikeplace.data.model.Bike
@@ -149,5 +146,32 @@ class FayaBase @Inject constructor(
                 }
             awaitClose {  }
         }
-    } 
+    }
+
+    suspend fun updateBikeAsFLow(bike: Bike): Flow<String> {
+        return callbackFlow {
+            bike.bikeId?.let {
+                db.collection(BIKES)
+                    .document(it)
+                    .update(bike.toMap())
+                    .addOnSuccessListener {
+                        trySend("Bike Updated Successfully")
+                    }
+                    .addOnFailureListener {
+                        trySend("Failure Updating Bike")
+                    }
+                awaitClose {  }
+            }
+        }
+    }
+     fun deleteBikeAsFlow(bikeId: String) {
+         db.collection(BIKES).document(bikeId)
+             .delete()
+             .addOnSuccessListener {
+                 Log.d("fBDeleteBikeAsFlow", "Bike Deletion Succeeded")
+             }
+             .addOnFailureListener {
+                 Log.d("fBDeleteBikeAsFlow", "Bike Deletion Failed")
+             }
+     }
 }

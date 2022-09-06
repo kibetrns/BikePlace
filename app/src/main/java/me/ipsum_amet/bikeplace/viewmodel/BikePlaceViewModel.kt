@@ -14,7 +14,6 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.Util.*
@@ -289,6 +288,7 @@ class BikePlaceViewModel @Inject constructor(
                 }
                 .collect() {
                     _selectedBike.value = it
+                    bike.value = it
                     Log.d("getAllBikesVM", "Flow Completed Successfully")
                     Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
@@ -354,6 +354,16 @@ class BikePlaceViewModel @Inject constructor(
     fun uploadBikeImage(uri: Uri) {
         uploadImage(uri) {
             addBike(imageUri = it)
+        }
+    }
+
+    fun updateBikeImage(uri: Uri) {
+        uploadImage(uri) {
+            updateOrAddBike(
+                imageUrl = it.toString(),
+                bikeId = _selectedBike.value?.bikeId,
+                isBooked = _selectedBike.value?.isBooked,
+            )
         }
     }
 
@@ -457,7 +467,7 @@ class BikePlaceViewModel @Inject constructor(
 
     fun updateOrAddBike(
         bikeId: String? = null,
-        booked: Boolean? = null,
+        isBooked: Boolean? = null,
         condition: CONDITION? = null,
         description: String? = null,
         imageUrl: String? = null,
@@ -470,7 +480,7 @@ class BikePlaceViewModel @Inject constructor(
 
         val bike = Bike(
             bikeId = bikeId,
-            isBooked = booked ?: bike.value?.isBooked,
+            isBooked = isBooked ?: bike.value?.isBooked,
             condition = condition ?: bikeCondition.value,
             description = description ?: bikeDescription.value,
             imageUrl = imageUrl ?: imageData.value.toString(),
@@ -549,6 +559,17 @@ class BikePlaceViewModel @Inject constructor(
         }
     }
 
+    fun deleteBike() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if( _selectedBike.value != null ) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.deleteBikeAsFLow(_selectedBike.value?.bikeId!!)
+                    Log.d("deleteBikeVM" ,"In deleted Bike VM")
+                }
+            }
+        }
+    }
+
     fun handleDatabaseAction(action: Action) {
 
         when (action) {
@@ -557,10 +578,10 @@ class BikePlaceViewModel @Inject constructor(
                 imageData.value?.let { uploadBikeImage(uri = it) }
             }
             Action.UPDATE -> {
-
+                imageData.value?.let { updateBikeImage(it) }
             }
             Action.DELETE -> {
-
+                deleteBike()
             }
             Action.DELETE_ALL -> {
 

@@ -19,4 +19,8 @@ class BikePlaceRepository @Inject constructor(
     fun getBikesByName(query: String): List<Bike>  { return fayaBase.getBikesByName(query) }
     suspend fun getBikesNameAsFlow(query: String): Flow<List<Bike>> { return fayaBase.getBikesByNameAsFlow(query) }
 
+    suspend fun updateBikeAsFlow(bike: Bike): Flow<String> { return fayaBase.updateBikeAsFLow(bike) }
+
+    suspend fun deleteBikeAsFLow(bikeId: String) { fayaBase.deleteBikeAsFlow(bikeId) }
+
 }
