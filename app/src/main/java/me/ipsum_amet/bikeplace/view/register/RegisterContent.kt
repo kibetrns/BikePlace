@@ -34,7 +34,7 @@ import me.ipsum_amet.bikeplace.Util.L_PADDING
 import me.ipsum_amet.bikeplace.Util.SIGN_IN_IMAGE_HEIGHT
 import me.ipsum_amet.bikeplace.Util.XL_PADDING
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
-import me.ipsum_amet.bikeplace.view.bike.displayToast
+import me.ipsum_amet.bikeplace.view.bikeEntry.displayToast
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 @Composable
@@ -170,7 +170,7 @@ fun RegisterContent(
                         if(bikePlaceViewModel.validateSamePassword()) {
                             bikePlaceViewModel.registerUser()
                             navigateToSignInScreen()
-                            displayToast(context = context, "If Account Creation Successful, Sign In Using Created Account")
+                           // displayToast(context = context, "If Account Creation Successful, Sign In Using Created Account")
                         } else {
                             displayToast(context = context, "Passwords DOESN'T Match")
                         }

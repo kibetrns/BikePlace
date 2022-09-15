@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.*
 import me.ipsum_amet.bikeplace.Util.BIKES
 import me.ipsum_amet.bikeplace.Util.USERS
 import me.ipsum_amet.bikeplace.data.model.Bike
+import me.ipsum_amet.bikeplace.data.model.TYPE
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -44,7 +45,7 @@ class FayaBase @Inject constructor(
         val listOfBikesAsFlow = mutableListOf<Bike>()
         return callbackFlow {
             val listener = db.collection(BIKES)
-                .orderBy("postedAt", Query.Direction.DESCENDING)
+                .orderBy("modifiedAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { documents: QuerySnapshot ->
                     for (document in documents) {
@@ -174,4 +175,6 @@ class FayaBase @Inject constructor(
                  Log.d("fBDeleteBikeAsFlow", "Bike Deletion Failed")
              }
      }
+
+
 }

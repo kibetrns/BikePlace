@@ -39,7 +39,7 @@ class BikePlaceViewModel @Inject constructor(
     val isAdmin = mutableStateOf(false)
     val refreshPostProgress = mutableStateOf(false)
 
-    private val user = mutableStateOf<User?>(null)
+    val user = mutableStateOf<User?>(null)
 
     val popUpNotification = mutableStateOf<Event<String>?>(null)
 
@@ -60,7 +60,7 @@ class BikePlaceViewModel @Inject constructor(
     var bikeCondition = mutableStateOf(CONDITION.AVERAGE)
     var bikeDescription = mutableStateOf("")
     var bikeImageUrl = mutableStateOf("")
-    var bikePrice = mutableStateOf("")
+    var bikePrice = mutableStateOf("0")
     var isBooked = mutableStateOf(false)
 
     var imageData = mutableStateOf<Uri?>(null)
@@ -69,6 +69,10 @@ class BikePlaceViewModel @Inject constructor(
     val searchAppBarState: MutableState<SearchAppBarState> =
         mutableStateOf(SearchAppBarState.CLOSED)
     val searchTextState: MutableState<String> = mutableStateOf("")
+
+    val getCategoryState: MutableState<GetCategoryState> =
+        mutableStateOf(GetCategoryState.TRIGGEREDNOT)
+
 
     val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
@@ -81,7 +85,18 @@ class BikePlaceViewModel @Inject constructor(
     private val _selectedBike: MutableStateFlow<Bike?> = MutableStateFlow(null)
     val selectedBike: StateFlow<Bike?> = _selectedBike
 
+    private val _topBikeChoices: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    val topBikeChoices: StateFlow<RequestState<List<Bike>>> = _topBikeChoices
+
+    private val _allBikeCategories: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    val allBikeCategories: StateFlow<RequestState<List<Bike>>> = _allBikeCategories
+
+    private val _allBikesByCategory: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    val allBikesByCategory: StateFlow<RequestState<List<Bike>>> = _allBikesByCategory
+
     val alreadyLoggedIn = mutableStateOf(false)
+
+    var hoursToLease = mutableStateOf("3")
 
 
     init {
@@ -97,6 +112,7 @@ class BikePlaceViewModel @Inject constructor(
     fun registerUser() {
         viewModelScope.launch(Dispatchers.IO) {
             inProgress.value = true
+            try {
             db.collection(USERS).whereEqualTo("fullName", fullName.value).get()
                 .addOnSuccessListener { documents: QuerySnapshot ->
                     if (documents.size() > 0) {
@@ -128,6 +144,10 @@ class BikePlaceViewModel @Inject constructor(
                         handleException(ex = ex, customMessage = errorMessage)
                     }
                 }
+            } catch (ex: Exception) {
+                ex.message?.let { handleException(ex = ex, customMessage = it) }
+            }
+            inProgress.value = false
         }
     }
 
@@ -139,28 +159,31 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     private fun createInitialUserProfile() {
-
         val uid = auth.currentUser?.uid
         val user = User(
             userId = uid,
             fullName = fullName.value,
-            phoneNumber = phoneNumber.value.toInt()
+            phoneNumber = phoneNumber.value
         )
-
-        inProgress.value = true
-        uid?.let {
-            db.collection(USERS).document(uid).set(user)
-                .addOnCompleteListener {
-                    inProgress.value = false
-                }
-                .addOnSuccessListener {
-                    handleException(customMessage = "Account Creation Successful")
-                    inProgress.value = false
-                }
-                .addOnFailureListener { ex: Exception ->
-                    handleException(ex = ex, customMessage = "Account Creation Failed")
-                    inProgress.value = false
-                }
+        try {
+            inProgress.value = true
+            uid?.let {
+                db.collection(USERS).document(uid).set(user)
+                    .addOnCompleteListener {
+                        inProgress.value = false
+                    }
+                    .addOnSuccessListener {
+                        handleException(customMessage = "Account Creation Successful")
+                        inProgress.value = false
+                    }
+                    .addOnFailureListener { ex: Exception ->
+                        handleException(ex = ex, customMessage = "Account Creation Failed")
+                        inProgress.value = false
+                    }
+            }
+        } catch (ex: Exception) {
+            ex.message?.let { handleException(ex = ex, customMessage = it) }
+            inProgress.value = false
         }
         inProgress.value = false
     }
@@ -174,7 +197,7 @@ class BikePlaceViewModel @Inject constructor(
             fullName = fullName.value,
             imageUrl = imageUrl.value,
             location = location.value,
-            phoneNumber = phoneNumber.value.toInt()
+            phoneNumber = phoneNumber.value
         )
         uid?.let { uId ->
             inProgress.value = true
@@ -255,41 +278,45 @@ class BikePlaceViewModel @Inject constructor(
 
     private fun getUserData(uid: String) {
         inProgress.value = true
-        db.collection(USERS).document(uid).get()
-            .addOnSuccessListener {
-                val user1 = it.toObject<User>()
-                user.value = user1
-                inProgress.value = false
-                popUpNotification.value = Event("User Data Retrieved Successfully")
+        try {
+            db.collection(USERS).document(uid).get()
+                .addOnSuccessListener {
+                    val user1 = it.toObject<User>()
+                    user.value = user1
+                    inProgress.value = false
+                    popUpNotification.value = Event("User Data Retrieved Successfully")
 
-            }
-            .addOnFailureListener { ex: Exception ->
-                handleException(ex = ex, "Unable to retrieve user data")
-                inProgress.value = false
-            }
+                }
+                .addOnFailureListener { ex: Exception ->
+                    handleException(ex = ex, "Unable to retrieve user data")
+                    inProgress.value = false
+                }
+        } catch (ex: Exception) {
+            ex.message?.let { handleException(ex = ex, customMessage = it) }
+        }
         inProgress.value = false
     }
+
     fun getSelectedBike(bikeId: String) {
-        Log.d("getSelectedBikeVM", _selectedBike.value.toString())
         viewModelScope.launch(Dispatchers.IO) {
             repository.getBikeByIdAsFlow(bikeId)
                 .onStart {
-                    Log.d("getSelectedBikeVM", "Started Collecting All Bikes As Flow")
-                    Log.d("getAllSelectedVM", _selectedBike.value.toString())
+                    Log.d("getSelectedBikeVM", "Started Collecting Selected Bike As Flow")
+                    Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
                 .catch { ex ->
-                    Log.d("getSelectedBikeVM", "Exception Caught: ${ex.message}")
+                    Log.w("getSelectedBikeVM", "Exception Caught: ${ex.message}")
                 }
                 .onCompletion { cause: Throwable? ->
                     if (cause != null )
-                        Log.d("getAllBikesVM", """Flow completed with message "${cause.message}" """)
+                        Log.d("getSelectedBikeVM", """Flow completed with message "${cause.message}" """)
                     else
-                        Log.d("getAllBikesVM", _allBikes.value.toString())
+                        Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
                 .collect() {
                     _selectedBike.value = it
                     bike.value = it
-                    Log.d("getAllBikesVM", "Flow Completed Successfully")
+                    Log.d("getSelectedBikeVM", "Flow Completed Successfully")
                     Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
 
@@ -308,30 +335,32 @@ class BikePlaceViewModel @Inject constructor(
 
      */
 
-
-
     fun loginUser(emailAddress: String, password: String) {
         inProgress.value = true
-        auth.signInWithEmailAndPassword(emailAddress, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    signedIn.value = true
-                    inProgress.value = false
-                    auth.currentUser?.uid?.let { uid ->
-                        handleException(customMessage = "Successfully logged In")
-                        getUserData(uid = uid)
+        try {
+            auth.signInWithEmailAndPassword(emailAddress, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        signedIn.value = true
+                        inProgress.value = false
+                        auth.currentUser?.uid?.let { uid ->
+                            handleException(customMessage = "Successfully logged In")
+                            getUserData(uid = uid)
 
+                        }
+                    } else {
+                        handleException(ex = task.exception, customMessage = "Login Failed")
+                        inProgress.value = false
                     }
-                } else {
-                    handleException(ex = task.exception, customMessage = "Login Failed")
+                }
+                .addOnFailureListener { ex: Exception ->
+                    handleException(ex = ex, customMessage = "Login Failed")
                     inProgress.value = false
                 }
-            }
-            .addOnFailureListener { ex: Exception ->
-                handleException(ex = ex, customMessage = "Login Failed")
-                inProgress.value = false
-            }
-
+        } catch (ex: Exception) {
+            ex.message?.let { handleException(ex = ex, customMessage = it) }
+        }
+        inProgress.value = false
     }
 
     private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit)   {
@@ -358,12 +387,17 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun updateBikeImage(uri: Uri) {
-        uploadImage(uri) {
-            updateOrAddBike(
-                imageUrl = it.toString(),
-                bikeId = _selectedBike.value?.bikeId,
-                isBooked = _selectedBike.value?.isBooked,
-            )
+        try {
+            uploadImage(uri) {
+                updateOrAddBike(
+                    bikeId = _selectedBike.value?.bikeId,
+                    isBooked = _selectedBike.value?.isBooked,
+                    imageUrl = it.toString(),
+
+                )
+            }
+        } catch (ex: Exception) {
+            Log.w("main", "Error Updating Bike Details")
         }
     }
 
@@ -372,6 +406,17 @@ class BikePlaceViewModel @Inject constructor(
 
 
     }
+
+    fun calculateTotalCheckoutPrice(): Double {
+        val result = mutableStateOf(0.0)
+        try {
+            result.value = _selectedBike.value?.price!! * hoursToLease.value.toDouble()
+        } catch (ex: Exception) {
+            Log.w("main", "${ex.message}")
+        }
+        return result.value
+    }
+
     fun getAllBikes() {
         _allBikes.value = RequestState.Loading
         Log.d("getAllBikesVM", _allBikes.value.toString())
@@ -402,6 +447,110 @@ class BikePlaceViewModel @Inject constructor(
         }
 
     }
+
+    fun getTopChoiceBikes() {
+        _topBikeChoices.value = RequestState.Loading
+        Log.d("getTopChoiceBikesVM", _topBikeChoices.value.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBikesAsFlow()
+                .onStart {
+                    Log.d("getTopChoiceBikesVM", "Started Collecting TopChoice Bikes As Flow")
+                    Log.d("getTopChoiceBikesVM", _topBikeChoices.value.toString())
+                }
+                .map { bikes: List<Bike> ->
+                    bikes.filter {
+                        it.condition == CONDITION.EXCELLENT || it.condition == CONDITION.GOOD
+                    }
+                }
+                .take(10)
+                .catch { ex ->
+                    Log.w("getTopChoiceBikesVM", "Exception Caught: ${ex.message}")
+                }
+                .onCompletion { cause: Throwable? ->
+                    if (cause != null )
+                        Log.d("getTopChoiceBikesVM", """Flow completed with message "${cause.message}" """)
+                    else
+                        Log.d("getTopChoiceBikesVM", _topBikeChoices.value.toString())
+                }
+                .collect {
+                    _topBikeChoices.value = RequestState.Success(it)
+                    Log.d("getTopChoiceBikesVM", "Flow Completed Successfully")
+                    Log.d("getTopChoiceBikesVM", _topBikeChoices.value.toString())
+                }
+        }
+    }
+
+    fun getAllBikeCategories() {
+        _allBikeCategories.value = RequestState.Loading
+        Log.d("getAllBikeCategoriesVM", _allBikeCategories.value.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBikesAsFlow()
+                .onStart {
+                    Log.d("getCategoriesOfBikesVM", "Started Collecting  All Bike Categories As Flow")
+                    Log.d("getCategoriesOfBikesVM", _allBikeCategories.value.toString())
+                }
+                .map { bikes: List<Bike> ->
+                    bikes.distinctBy { it.type }
+                }
+                .catch { ex ->
+                    Log.w("getCategoriesOfBikesVM", "Exception Caught: ${ex.message}")
+                }
+                .onCompletion { cause: Throwable? ->
+                    if (cause != null )
+                        Log.d("getCategoriesOfBikesVM", """Flow completed with message "${cause.message}" """)
+                    else
+                        Log.d("getCategoriesOfBikesVM", _allBikeCategories.value.toString())
+                }
+                .collect() {
+                    _allBikeCategories.value = RequestState.Success(it)
+                    Log.d("getCategoriesOfBikesVM", "Flow Completed Successfully")
+                    Log.d("getCategoriesOfBikesVM", _allBikeCategories.value.toString())
+                }
+        }
+    }
+    fun getAllBikesByCategory() {
+        _allBikesByCategory.value = RequestState.Loading
+        Log.d("getAllBikesByCategoryVM", _allBikesByCategory.value.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBikesAsFlow()
+                .onStart {
+                    Log.d(
+                        "getAllBikesByCategoryVM",
+                        "Started Collecting  All Bikes By Category As Flow"
+                    )
+                    Log.d("getAllBikesByCategoryVM", _allBikesByCategory.value.toString())
+                }
+                .map { bikes: List<Bike> ->
+                    bikes.filter{ bike ->
+                        bike.type == _selectedBike.value?.type
+                    }
+
+                }
+                .catch { ex ->
+                    Log.w("getAllBikesByCategoryVM", "Exception Caught: ${ex.message}")
+                }
+                .catch { cause: Throwable? ->
+                    if (cause != null)
+                        Log.d(
+                            "getAllBikesByCategoryVM",
+                            """Flow completed with message "${cause.message}" """
+                        )
+                    else
+                        Log.d("getAllBikesByCategoryVM", _allBikesByCategory.value.toString())
+                }
+                .onCompletion {
+                    Log.d("getAllBikesByCategoryVM", "Flow Completed Successfully")
+                }
+                .collect() {
+                    _allBikesByCategory.value = RequestState.Success(it)
+                    Log.d("getAllBikesByCategoryVM", _allBikesByCategory.value.toString())
+                    Log.d("getCategoryStateVM", getCategoryState.value.toString())
+                    Log.d("actionState", action.value.toString())
+                }
+        }
+    }
+
+
 /*
    fun getAllBikes() {
        _allBikes.value = RequestState.Loading
@@ -417,9 +566,10 @@ class BikePlaceViewModel @Inject constructor(
    }
 
  */
+
     fun searchDB(query: String){
     _searchedBikes.value = RequestState.Loading
-    Log.d("searchDBVM", _allBikes.value.toString())
+    Log.d("searchDBVM", _searchedBikes.value.toString())
     viewModelScope.launch(Dispatchers.IO) {
         repository.getBikesNameAsFlow(query)
             .onStart {
@@ -484,6 +634,7 @@ class BikePlaceViewModel @Inject constructor(
             condition = condition ?: bikeCondition.value,
             description = description ?: bikeDescription.value,
             imageUrl = imageUrl ?: imageData.value.toString(),
+            modifiedAt = Timestamp.now(),
             name = name ?: bikeName.value,
             price = price ?: bikePrice.value.toDouble(),
             type = type ?: bikeType.value,
@@ -521,9 +672,6 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun addBike(imageUri: Uri? = null) {
-
-
-
         viewModelScope.launch(Dispatchers.IO) {
             val bikeId = UUID.randomUUID().toString()
             val userId = auth.currentUser?.uid
@@ -537,6 +685,7 @@ class BikePlaceViewModel @Inject constructor(
                 imageUrl = imageUri.toString(),
                 description = bikeDescription.value,
                 postedAt = Timestamp.now(),
+                modifiedAt = Timestamp.now(),
                 condition = bikeCondition.value,
                 type = bikeType.value
             )
@@ -587,6 +736,18 @@ class BikePlaceViewModel @Inject constructor(
 
             }
             Action.UNDO -> {
+
+            }
+            Action.GET_ALL_BIKES_BY_TOP_CHOICE -> {
+                getTopChoiceBikes()
+            }
+            Action.GET_ALL_BIKES_BY_CATEGORY -> {
+                getAllBikesByCategory()
+            }
+            Action.GET_CATEGORIES_OF_BIKE -> {
+                getAllBikeCategories()
+            }
+            Action.GET_TOP_CHOICE_BIKES -> {
 
             }
 

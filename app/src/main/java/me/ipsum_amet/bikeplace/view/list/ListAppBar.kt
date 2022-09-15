@@ -77,7 +77,7 @@ fun DefaultListAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = stringResource(id = R.string.list_screen_title))
+            Text(text = stringResource(id = R.string.default_screen_title))
         },
         actions = {
             ListAppBarActions(

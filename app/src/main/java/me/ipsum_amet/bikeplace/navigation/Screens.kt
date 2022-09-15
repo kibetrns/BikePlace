@@ -35,17 +35,39 @@ class Screens(navController: NavController) {
 
     val list: (String) -> Unit = { bikeId: String ->
         navController.navigate("bike/$bikeId") {
-            popUpTo(LIST_SCREEN) { inclusive = false }
+            popUpTo(HOME_SCREEN) { inclusive = true }
             launchSingleTop = true
 
         }
     }
+    val list2: (String) -> Unit = { bikeId: String ->
+        navController.navigate("bikeDetails/$bikeId") {
+            popUpTo(HOME_SCREEN) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
 
     val bike: (Action) -> Unit = { action: Action ->
         navController.navigate("list/${action.name}") {
-            popUpTo(SIGNIN_SCREEN) {
+            popUpTo(HOME_SCREEN) {
                 inclusive = true
             }
+            launchSingleTop = true
+        }
+    }
+
+
+    val category: (Action) -> Unit = { action: Action ->
+        navController.navigate("categoryList/$action") {
+            popUpTo(HOME_SCREEN) { inclusive = true }
+            launchSingleTop =true
+        }
+    }
+
+    val home: (Action) -> Unit = { action: Action ->
+        navController.navigate("home/?${action.name}") {
+            popUpTo(HOME_SCREEN) { inclusive = true }
             launchSingleTop = true
         }
     }

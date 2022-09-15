@@ -41,19 +41,13 @@ fun ListContent(
     allBikes: RequestState<List<Bike>>,
     searchedBikes: RequestState<List<Bike>>,
     searchAppBarState: SearchAppBarState,
+    allBikesByCategory: RequestState<List<Bike>>,
+    getCategoryState: GetCategoryState,
     navigateToBikeScreen: (bikeId: String) -> Unit
 ) {
 
-
-    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
-        if (searchedBikes is RequestState.Success) {
-            HandleListContent(
-                bikes = searchedBikes.data,
-                navigateToBikeScreen = navigateToBikeScreen
-            )
-        }
-    } else {
-        when( allBikes ) {
+    if (getCategoryState == GetCategoryState.TRIGGERED) {
+        when (allBikesByCategory) {
             RequestState.Loading -> {
                 ProgressBox()
             }
@@ -61,12 +55,40 @@ fun ListContent(
                 ProgressBox()
             }
             else -> {
-                if ( allBikes is RequestState.Success ) {
+                if (allBikesByCategory is RequestState.Success) {
+                    HandleListContent(
+                        bikes = allBikesByCategory.data,
+                        navigateToBikeScreen = navigateToBikeScreen
+                    )
+                } else if (allBikes is RequestState.Error) {
+                    Message(message = "Error while displaying Bikes By Category")
+                }
+            }
+        }
+    }
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedBikes is RequestState.Success) {
+            HandleListContent(
+                bikes = searchedBikes.data,
+                navigateToBikeScreen = navigateToBikeScreen
+            )
+        }
+    }
+    if (searchAppBarState != SearchAppBarState.TRIGGERED || getCategoryState != GetCategoryState.TRIGGERED) {
+        when (allBikes) {
+            RequestState.Loading -> {
+                ProgressBox()
+            }
+            RequestState.Idle -> {
+                ProgressBox()
+            }
+            else -> {
+                if (allBikes is RequestState.Success) {
                     HandleListContent(
                         bikes = allBikes.data,
                         navigateToBikeScreen = navigateToBikeScreen
                     )
-                } else if ( allBikes is RequestState.Error ) {
+                } else if (allBikes is RequestState.Error) {
                     Message(message = "Error while Listing Bikes.")
                 }
             }
@@ -84,6 +106,7 @@ fun ListContent(
         }
         */
     }
+
 }
 
 @Composable
@@ -138,12 +161,15 @@ fun BikeItem(
     Card(
         shape = RectangleShape,
         elevation = BIKE_CARD_ELEVATION,
-        border = BorderStroke(width = BIKE_CARD_WIDTH, color = Color.LightGray),
+        border = BorderStroke(width = BIKE_CARD_WIDTH, color = Color.Gray),
         onClick = {
             bike.bikeId?.let { navigateToBikeScreen(it) }
-        }
+        },
+        modifier = Modifier
+            .padding(bottom = L_PADDING)
+
     ) {
-        Column() {
+        Column(modifier = Modifier.padding(L_PADDING)) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 bike.name?.let {
                     Text(
@@ -154,7 +180,7 @@ fun BikeItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.height(M_PADDING))
+                Spacer(modifier = Modifier.height(S_PADDING))
                 bike.type?.let {
                     Text(
                         text = it.name,
@@ -190,7 +216,7 @@ fun BikeItem(
                     .fillMaxWidth()
             ) {
                 Text(text = "Condition: ${bike.condition?.name}")
-                Text(text = "KES ${bike.price} /hr", overflow = TextOverflow.Ellipsis)
+                Text(text = "KES ${bike.price}/hr", overflow = TextOverflow.Ellipsis)
             }
         }
     }

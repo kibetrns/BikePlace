@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.view.bike
+package me.ipsum_amet.bikeplace.view.bikeEntry
 
 import android.content.Context
 import android.net.Uri
@@ -7,8 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.collection.mutableVectorOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import me.ipsum_amet.bikeplace.Util.Action
 import me.ipsum_amet.bikeplace.data.model.Bike

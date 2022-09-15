@@ -10,22 +10,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import me.ipsum_amet.bikeplace.Util.Action
 import me.ipsum_amet.bikeplace.Util.BIKE_ARGUMENT_KEY
+import me.ipsum_amet.bikeplace.Util.BIKE_DETAILS_SCREEN
 import me.ipsum_amet.bikeplace.Util.BIKE_SCREEN
-import me.ipsum_amet.bikeplace.view.bikeEntry.BikeScreen
+import me.ipsum_amet.bikeplace.view.bikeDetails.BikeDetailsScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
-fun NavGraphBuilder.bikeComposable(
-    navigateToListScreen: (Action) -> Unit,
+fun NavGraphBuilder.bikeDetailsComposable(
+    navigateToListScreen:(Action) -> Unit,
     bikePlaceViewModel: BikePlaceViewModel
 ) {
     composable(
-        route = BIKE_SCREEN,
+        route = BIKE_DETAILS_SCREEN,
         arguments = listOf(navArgument(BIKE_ARGUMENT_KEY) {
             type = NavType.StringType
         })
     ) { navBackStackEntry ->
         val bikeId = navBackStackEntry.arguments?.getString(BIKE_ARGUMENT_KEY)
-
 
         if (bikeId != null) {
             LaunchedEffect(key1 = bikeId) {
@@ -36,15 +36,14 @@ fun NavGraphBuilder.bikeComposable(
 
         LaunchedEffect(key1 = selectedBike) {
             if (selectedBike != null || bikeId == "FIRST") {
-                Log.d("selectedBike", "${selectedBike?.bikeId}")
-                bikePlaceViewModel.updateBikeFields(selectedBike = selectedBike)
+                Log.d("selectedBikeBDC", "${selectedBike?.bikeId}")
             }
         }
-            BikeScreen(
-                bikePlaceViewModel = bikePlaceViewModel,
-                selectedBike = selectedBike,
-                navigateToListScreen = navigateToListScreen
-            )
-
+        BikeDetailsScreen(
+            bikePlaceViewModel = bikePlaceViewModel,
+            selectedBike = selectedBike,
+            navigateToListScreen = navigateToListScreen
+        )
     }
 }
+

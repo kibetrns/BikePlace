@@ -3,7 +3,7 @@ package me.ipsum_amet.bikeplace.data.model
 data class User(
     var userId: String? = null,
     var fullName: String? = null,
-    var phoneNumber: Int? = null,
+    var phoneNumber: String? = null,
     var imageUrl: String? = null,
     var location: String? =null,
     var orderedBikes: List<Bike>? = null

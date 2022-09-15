@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.view.bike
+package me.ipsum_amet.bikeplace.view.bikeEntry
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,6 +21,7 @@ import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.*
 import me.ipsum_amet.bikeplace.components.ConditionDropDown
+import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.components.TypeDropDown
 import me.ipsum_amet.bikeplace.data.model.CONDITION
 import me.ipsum_amet.bikeplace.data.model.TYPE
@@ -126,8 +127,8 @@ fun BikeImage(
         ImageCard(
             model = imageUrl,
             modifier = Modifier
-                .padding(M_PADDING)
                 .height(BIkE_CARD_IMAGE_HEIGHT)
+                .padding(M_PADDING)
                 .fillMaxWidth()
         )
         Card(
@@ -144,19 +145,14 @@ fun BikeImage(
 
             
         }
-
-
     }
-
-
-
 }
 
 @Composable
 fun CommonImage(
     model: String?,
     modifier: Modifier = Modifier.wrapContentSize(),
-    contentScale: ContentScale = ContentScale.Inside
+    contentScale: ContentScale = ContentScale.FillBounds
 ) {
     val painter =  rememberAsyncImagePainter(model = model)
     Image(
@@ -166,7 +162,7 @@ fun CommonImage(
         contentScale = contentScale
     )
     if (painter.state is AsyncImagePainter.State.Loading) {
-        CircularProgressIndicator()
+        ProgressBox()
     }
 }
 
@@ -175,9 +171,8 @@ fun ImageCard(
     model: String?,
     modifier: Modifier
 ) {
-
     Card(modifier = modifier) {
-        if (model.isNullOrBlank()) {
+        if ( model.isNullOrEmpty() ) {
             Image(
                 painter = painterResource(id = R.drawable.image),
                 contentDescription = stringResource(
@@ -189,11 +184,8 @@ fun ImageCard(
         } else {
             CommonImage(model = model)
         }
-        
     }
 }
-
-
 
 
 @Preview("BikeContent")

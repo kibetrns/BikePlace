@@ -21,7 +21,8 @@ fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePl
         )
         signInComposable(
             navigateToRegisterScreen = screen.signIn,
-            navigateToListScreen = screen.bike,
+            // navigateToListScreen = screen.bike,
+            navigateToListScreen = screen.home,
             navigateToResetPasswordScreen = screen.reset,
             bikePlaceViewModel = bikePlaceViewModel,
         )
@@ -36,6 +37,17 @@ fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePl
             navigateToListScreen = screen.bike,
             bikePlaceViewModel = bikePlaceViewModel
         )
+        bikeDetailsComposable(
+            navigateToListScreen = screen.bike,
+            bikePlaceViewModel = bikePlaceViewModel
+        )
+        homeComposable(
+            bikePlaceViewModel = bikePlaceViewModel,
+            navigateToBikeDetailsScreen = screen.list2,
+        )
+        categoryListComposable(
+            bikePlaceViewModel = bikePlaceViewModel,
+            navigateToBikeDetailsScreen = screen.list2
+        )
     }
-
 }

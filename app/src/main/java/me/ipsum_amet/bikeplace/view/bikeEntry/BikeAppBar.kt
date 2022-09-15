@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.view.bike
+package me.ipsum_amet.bikeplace.view.bikeEntry
 
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -139,7 +139,7 @@ fun BackAction(onBackClicked: (Action) ->Unit ) {
         onClick = { onBackClicked(Action.NO_ACTION) }) {
         Icon(
             imageVector = Icons.Default.ArrowBack,
-            contentDescription = stringResource(id = R.string.back_arrow)
+            contentDescription = stringResource(id = R.string.back_arrow),
         )
     }
 }

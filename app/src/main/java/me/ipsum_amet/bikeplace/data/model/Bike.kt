@@ -13,6 +13,7 @@ data class Bike(
     var description: String? = null,
     var isBooked: Boolean? = null,
     @Transient var postedAt: Timestamp? = null,
+    @Transient var modifiedAt: Timestamp? = null,
     var condition: CONDITION? = null,
     var type: TYPE? = null
 ) : Serializable {

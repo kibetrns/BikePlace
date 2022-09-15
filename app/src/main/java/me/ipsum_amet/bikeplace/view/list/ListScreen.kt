@@ -13,12 +13,21 @@ import me.ipsum_amet.bikeplace.Util.Action
 
 @Composable
 fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikePlaceViewModel) {
-    LaunchedEffect(key1 = true){
+
+     LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.getAllBikesByCategory()
+     }
+
+
+    LaunchedEffect(key1 = true) {
         bikePlaceViewModel.getAllBikes()
     }
 
+
+
     val searchAppBarState by bikePlaceViewModel.searchAppBarState
     val searchTextState by bikePlaceViewModel.searchTextState
+    val getCategoryState by bikePlaceViewModel.getCategoryState
 
     val action by bikePlaceViewModel.action
 
@@ -29,6 +38,9 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
     val searchedBikes by bikePlaceViewModel.searchedBikes.collectAsState()
     Log.d("lSSearchedBikes", searchedBikes.toString())
 
+    val allBikesByCategory by bikePlaceViewModel.allBikesByCategory.collectAsState()
+    Log.d("lSAllBikesByCategory", allBikesByCategory.toString())
+
     DisplaySnackBar(
         scaffoldState = scaffoldState,
         handleDatabaseActions = { bikePlaceViewModel.handleDatabaseAction(action = action) },
@@ -38,7 +50,6 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
         taskTitle = bikePlaceViewModel.bikeName.value,
         action = action
     )
-
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -54,6 +65,8 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
                 allBikes = allBikes,
                 searchedBikes = searchedBikes,
                 searchAppBarState = searchAppBarState,
+                allBikesByCategory = allBikesByCategory,
+                getCategoryState = getCategoryState,
                 navigateToBikeScreen = navigateToBikeScreen
             )
         },
