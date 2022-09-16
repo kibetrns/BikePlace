@@ -27,10 +27,6 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
-
-
-
-
     RegisterContent(
         fullName = fullName,
         onFullNameChange = { bikePlaceViewModel.fullName.value = it },
@@ -49,9 +45,6 @@ fun RegisterScreen(
     )
 
 }
-
-
-
 
 @Preview(name = "Register Screen", showBackground = true)
 @Composable

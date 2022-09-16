@@ -462,6 +462,12 @@ class BikePlaceViewModel @Inject constructor(
                         it.condition == CONDITION.EXCELLENT || it.condition == CONDITION.GOOD
                     }
                 }
+                .map { bikes: List<Bike> ->
+                    bikes.sortedWith(compareBy { it.condition?.name?.length } )
+                }
+                .map { bikes: List<Bike> ->
+                    bikes.asReversed()
+                }
                 .take(10)
                 .catch { ex ->
                     Log.w("getTopChoiceBikesVM", "Exception Caught: ${ex.message}")

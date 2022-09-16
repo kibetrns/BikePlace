@@ -33,7 +33,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 @Composable
 fun SignInScreen(
     navigateToRegisterScreen: () -> Unit,
-    navigateToListScreen: (Action) -> Unit,
+    navigateToHomeScreen: () -> Unit,
     navigateToResetPasswordScreen: () -> Unit,
     bikePlaceViewModel: BikePlaceViewModel
 ) {
@@ -118,9 +118,9 @@ fun SignInScreen(
                         )
                         if (signedIn && !alreadyLoggedIn.value) {
                             alreadyLoggedIn.value = true
-                           ///navigateToListScreen(Action.NO_ACTION)
-                            //navigateToListScreen(Action.GET_ALL_BIKES)
-                            navigateToListScreen(Action.GET_ALL_BIKES_BY_TOP_CHOICE)
+                           //navigateToHomeScreen(Action.NO_ACTION)
+                            //navigateToHomeScreen(Action.GET_ALL_BIKES)
+                            navigateToHomeScreen()
                         }
                     } else {
                         displayToast(context = context, "Fill in all Field(s) to Proceed")
@@ -164,7 +164,7 @@ fun PLoginScreen() {
     BikePlaceTheme {
         SignInScreen(
             navigateToRegisterScreen = {},
-            navigateToListScreen = {},
+            navigateToHomeScreen = {},
             navigateToResetPasswordScreen = {},
             bikePlaceViewModel = vm
         )

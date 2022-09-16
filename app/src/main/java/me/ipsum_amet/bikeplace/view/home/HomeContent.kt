@@ -26,7 +26,8 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     topChoiceBikes: RequestState<List<Bike>>,
     allBikeCategories: RequestState<List<Bike>>,
-    onCHomeBikeClicked: () -> Unit,
+    onCHomeBikeClicked: (String) -> Unit,
+    navigateToTopChoiceBikes: () -> Unit,
     navigateToBikeDetailsScreen: (bikeId: String) -> Unit,
 ) {
 
@@ -46,7 +47,7 @@ fun HomeContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Top Choices")
-                TextButton(onClick = {}) {
+                TextButton(onClick = { navigateToTopChoiceBikes() }) {
                     Text(text = "show more")
                 }
             }
@@ -118,7 +119,7 @@ fun HandleDisplayTopChoicesHomeContent(
 fun HandleDisplayCategoriesHomeContent(
     bikes: List<Bike>,
     modifier: Modifier = Modifier,
-    onCHomeBikeClicked: () -> Unit,
+    onCHomeBikeClicked: (String) -> Unit,
 ) {
     if ( bikes.isEmpty() )
         MessageRow(
@@ -160,7 +161,7 @@ fun DisplayTopChoicesHomeContent(
 fun DisplayCategoriesHomeContent(
     bikes: List<Bike>,
     modifier: Modifier = Modifier,
-    onCHomeBikeClicked: () -> Unit
+    onCHomeBikeClicked: (String) -> Unit
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(L_PADDING)

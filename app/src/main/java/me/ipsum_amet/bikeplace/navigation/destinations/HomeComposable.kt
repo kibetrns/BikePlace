@@ -44,6 +44,8 @@ fun NavGraphBuilder.homeComposable(
 
         HomeScreen(
             bikePlaceViewModel = bikePlaceViewModel,
+            onCHomeBikeClicked = {},
+            navigateToTopChoiceBikes = {},
             navigateToBikeDetailsScreen = navigateToBikeDetailsScreen
         )
     }

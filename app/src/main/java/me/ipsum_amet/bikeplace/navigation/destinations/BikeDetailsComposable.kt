@@ -11,7 +11,6 @@ import androidx.navigation.navArgument
 import me.ipsum_amet.bikeplace.Util.Action
 import me.ipsum_amet.bikeplace.Util.BIKE_ARGUMENT_KEY
 import me.ipsum_amet.bikeplace.Util.BIKE_DETAILS_SCREEN
-import me.ipsum_amet.bikeplace.Util.BIKE_SCREEN
 import me.ipsum_amet.bikeplace.view.bikeDetails.BikeDetailsScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
@@ -42,7 +41,7 @@ fun NavGraphBuilder.bikeDetailsComposable(
         BikeDetailsScreen(
             bikePlaceViewModel = bikePlaceViewModel,
             selectedBike = selectedBike,
-            navigateToListScreen = navigateToListScreen
+            navigateToPreviousScreen = navigateToListScreen
         )
     }
 }

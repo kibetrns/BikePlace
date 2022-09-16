@@ -10,7 +10,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 fun BikeDetailsScreen(
     bikePlaceViewModel: BikePlaceViewModel,
     selectedBike: Bike?,
-    navigateToListScreen: (Action) -> Unit
+    navigateToPreviousScreen: (Action) -> Unit
 ) {
     val hoursToLease by remember { bikePlaceViewModel.hoursToLease }
     
@@ -19,7 +19,7 @@ fun BikeDetailsScreen(
             BikeDetailsAppBar(
                 navigateToListScreen = { action: Action ->
                     if ( action == Action.NO_ACTION ) {
-                        navigateToListScreen(action)
+                        navigateToPreviousScreen(action)
                     }
                 }
             )

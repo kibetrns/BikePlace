@@ -9,7 +9,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 fun NavGraphBuilder.signInComposable(
     navigateToRegisterScreen: () -> Unit,
-    navigateToListScreen: (Action) -> Unit,
+    navigateToListScreen: () -> Unit,
     navigateToResetPasswordScreen: () -> Unit,
     bikePlaceViewModel: BikePlaceViewModel
 ) {
@@ -18,7 +18,7 @@ fun NavGraphBuilder.signInComposable(
     ) {
         SignInScreen(
             navigateToRegisterScreen = navigateToRegisterScreen,
-            navigateToListScreen = navigateToListScreen,
+            navigateToHomeScreen = navigateToListScreen,
             navigateToResetPasswordScreen = navigateToResetPasswordScreen,
             bikePlaceViewModel = bikePlaceViewModel
         )

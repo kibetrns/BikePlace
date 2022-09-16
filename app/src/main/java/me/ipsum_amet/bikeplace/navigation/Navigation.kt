@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import me.ipsum_amet.bikeplace.Util.REGISTER_SCREEN
 import me.ipsum_amet.bikeplace.navigation.destinations.*
+import me.ipsum_amet.bikeplace.navigation.graphs.RootNavigationGraph
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 @Composable
@@ -14,6 +15,12 @@ fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePl
         Screens(navController = navController)
     }
 
+
+
+    RootNavigationGraph(navController = navController, bikePlaceViewModel = bikePlaceViewModel)
+
+
+/*
     NavHost(navController = navController, startDestination = REGISTER_SCREEN) {
         registerComposable(
             navigateToSignInScreen = screen.register,
@@ -50,4 +57,6 @@ fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePl
             navigateToBikeDetailsScreen = screen.list2
         )
     }
+
+ */
 }

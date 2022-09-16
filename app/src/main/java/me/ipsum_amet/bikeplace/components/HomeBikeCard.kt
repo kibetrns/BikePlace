@@ -42,6 +42,7 @@ fun TCHomeBikeCard(bike: Bike, navigateToBikeScreen:(String) -> Unit) {
         ) {
             Card(
                 shape = CircleShape,
+                elevation = CIRCULAR_BIKE_IMAGE_ELEVATION,
                 modifier = Modifier
                     .size(CIRCULAR_BIKE_SIZE)
                     .align(CenterHorizontally)
@@ -74,7 +75,7 @@ fun TCHomeBikeCard(bike: Bike, navigateToBikeScreen:(String) -> Unit) {
 @Composable
 fun CHomeBikeCard(
     bike: Bike,
-    onCHomeBikeClicked: () -> Unit,
+    onCHomeBikeClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -82,8 +83,8 @@ fun CHomeBikeCard(
         border = BorderStroke(width = BIKE_CARD_WIDTH, color = Color.Gray),
         modifier = modifier,
         onClick = {
-            onCHomeBikeClicked()
-            }
+            bike.bikeId?.let { onCHomeBikeClicked(it) }
+        }
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -94,6 +95,7 @@ fun CHomeBikeCard(
             Text(text = "${bike.type}")
             Card(
                 shape = CircleShape,
+                elevation = CIRCULAR_BIKE_IMAGE_ELEVATION,
                 modifier = Modifier
                     .size(CIRCULAR_BIKE_SIZE)
                     .align(CenterHorizontally)

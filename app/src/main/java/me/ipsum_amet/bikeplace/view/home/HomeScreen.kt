@@ -15,6 +15,8 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 @Composable
 fun HomeScreen(
     bikePlaceViewModel: BikePlaceViewModel,
+    onCHomeBikeClicked: (String) -> Unit,
+    navigateToTopChoiceBikes: () -> Unit,
     navigateToBikeDetailsScreen: (bikeId: String) -> Unit,
     ) {
 
@@ -54,10 +56,8 @@ fun HomeScreen(
                     user = user,
                     topChoiceBikes = topBikeChoices,
                     allBikeCategories = allBikeCategories,
-                    onCHomeBikeClicked = {
-                        bikePlaceViewModel.action.value = Action.GET_ALL_BIKES_BY_CATEGORY
-                        bikePlaceViewModel.getCategoryState.value = GetCategoryState.TRIGGERED
-                    },
+                    onCHomeBikeClicked = onCHomeBikeClicked,
+                    navigateToTopChoiceBikes = navigateToTopChoiceBikes,
                     navigateToBikeDetailsScreen = navigateToBikeDetailsScreen
                 )
             }
