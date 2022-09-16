@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.GetCategoryState
+import androidx.navigation.NavHostController
+import me.ipsum_amet.bikeplace.components.BottomNavBar
 import me.ipsum_amet.bikeplace.data.model.User
 import me.ipsum_amet.bikeplace.view.list.DisplaySnackBar
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
@@ -15,6 +15,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 @Composable
 fun HomeScreen(
     bikePlaceViewModel: BikePlaceViewModel,
+    navController: NavHostController,
     onCHomeBikeClicked: (String) -> Unit,
     navigateToTopChoiceBikes: () -> Unit,
     navigateToBikeDetailsScreen: (bikeId: String) -> Unit,
@@ -48,7 +49,7 @@ fun HomeScreen(
             HomeAppBar()
         },
         bottomBar = {
-                   // BottomNavBar(navController = )
+            BottomNavBar(navController = navController)
         },
         content = {
             user?.let { user: User ->

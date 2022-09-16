@@ -29,6 +29,7 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
 
             HomeScreen(
                 bikePlaceViewModel = bikePlaceViewModel,
+                navController = navController,
                 onCHomeBikeClicked = { bikeId: String ->
                     navController.navigate("categoryList/$bikeId") {
                         popUpTo(HomeScreen.Home.route)
@@ -42,10 +43,10 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
                     }
                 },
                 navigateToBikeDetailsScreen = { bikeId: String ->
-                    navController.navigate("bikeDetails/$bikeId") {
-                        popUpTo(HomeScreen.Home.route)
-                        launchSingleTop = true
-                    }
+                        navController.navigate("bikeDetails/$bikeId") {
+                            popUpTo(HomeScreen.Home.route)
+                            launchSingleTop = true
+                        }
                 }
             )
         }
@@ -102,7 +103,6 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
                 navController.navigate("bikeDetails/$bikeId") {
                     popUpTo(HomeScreen.Home.route)
                     launchSingleTop = true
-
                 }
             }
         )

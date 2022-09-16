@@ -17,12 +17,11 @@ fun RootNavigationGraph(navController: NavHostController, bikePlaceViewModel: Bi
 
         homeNavGraph(navController = navController, bikePlaceViewModel = bikePlaceViewModel)
 
+        searchNavGraph(navController = navController, bikePlaceViewModel = bikePlaceViewModel)
 
-
+        statNavGraph(navController = navController, bikePlaceViewModel = bikePlaceViewModel)
 
     }
-
-    
 }
 object Graph {
     const val ROOT = "root_graph"

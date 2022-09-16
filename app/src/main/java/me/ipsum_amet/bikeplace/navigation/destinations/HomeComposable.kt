@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import me.ipsum_amet.bikeplace.Util.*
 import me.ipsum_amet.bikeplace.view.home.HomeScreen
@@ -44,6 +45,7 @@ fun NavGraphBuilder.homeComposable(
 
         HomeScreen(
             bikePlaceViewModel = bikePlaceViewModel,
+            navController = rememberNavController(),
             onCHomeBikeClicked = {},
             navigateToTopChoiceBikes = {},
             navigateToBikeDetailsScreen = navigateToBikeDetailsScreen
