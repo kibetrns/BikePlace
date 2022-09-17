@@ -1,32 +1,22 @@
 package me.ipsum_amet.bikeplace.view.list
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.*
-import coil.request.ImageRequest
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.*
 import me.ipsum_amet.bikeplace.components.Message
@@ -41,8 +31,6 @@ fun ListContent(
     allBikes: RequestState<List<Bike>>,
     searchedBikes: RequestState<List<Bike>>,
     searchAppBarState: SearchAppBarState,
-    allBikesByCategory: RequestState<List<Bike>>,
-    getCategoryState: GetCategoryState,
     navigateToBikeScreen: (bikeId: String) -> Unit
 ) {
 /*
