@@ -90,7 +90,7 @@ fun BikeDetailsContent(
             bike.description?.let {
                 Text(
                     text = it,
-                    maxLines = 7,
+                    maxLines = 11,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start
                 )

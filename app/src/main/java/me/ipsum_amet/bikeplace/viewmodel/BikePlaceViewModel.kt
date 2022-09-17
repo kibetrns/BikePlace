@@ -426,6 +426,11 @@ class BikePlaceViewModel @Inject constructor(
                     Log.d("getAllBikesVM", "Started Collecting All Bikes As Flow")
                     Log.d("getAllBikesVM", _allBikes.value.toString())
                 }
+                .map { bikes: List<Bike> ->
+                    bikes.filter { bike: Bike ->
+                        bike.isBooked == false
+                    }
+                }
                 .onEach {
                     Log.d("getAllBikesVM", it.toString())
                     Log.d("getAllBikesVM", _allBikes.value.toString())
