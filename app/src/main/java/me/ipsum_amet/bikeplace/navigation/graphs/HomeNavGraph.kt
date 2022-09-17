@@ -104,6 +104,9 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
                     popUpTo(HomeScreen.Home.route)
                     launchSingleTop = true
                 }
+            },
+            navigateToPreviousScreen = {
+                navController.navigateUp()
             }
         )
 
@@ -120,13 +123,15 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
         ListTopChoiceScreen(
             topChoicesBikes = topChoiceBikes,
             bikePlaceViewModel = bikePlaceViewModel,
-            navigateToBikeDetailsScreen = { bikeId: String ->
-                navController.navigate("bikeDetails/$bikeId") {
-                    popUpTo(HomeScreen.Home.route)
-                    launchSingleTop = true
-                }
+            navigateToPreviousScreen = {
+                navController.navigateUp()
             }
-        )
+        ) { bikeId: String ->
+            navController.navigate("bikeDetails/$bikeId") {
+                popUpTo(HomeScreen.Home.route)
+                launchSingleTop = true
+            }
+        }
     }
 }
 

@@ -17,7 +17,7 @@ fun BikeDetailsScreen(
     Scaffold(
         topBar = {
             BikeDetailsAppBar(
-                navigateToListScreen = { action: Action ->
+                navigateToPreviousScreen = { action: Action ->
                     if ( action == Action.NO_ACTION ) {
                         navigateToPreviousScreen(action)
                     }
