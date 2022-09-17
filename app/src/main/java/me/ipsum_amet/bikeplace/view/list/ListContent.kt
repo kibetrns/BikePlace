@@ -45,7 +45,7 @@ fun ListContent(
     getCategoryState: GetCategoryState,
     navigateToBikeScreen: (bikeId: String) -> Unit
 ) {
-
+/*
     if (getCategoryState == GetCategoryState.TRIGGERED) {
         when (allBikesByCategory) {
             RequestState.Loading -> {
@@ -66,6 +66,9 @@ fun ListContent(
             }
         }
     }
+
+ */
+
     if (searchAppBarState == SearchAppBarState.TRIGGERED) {
         if (searchedBikes is RequestState.Success) {
             HandleListContent(
@@ -73,8 +76,7 @@ fun ListContent(
                 navigateToBikeScreen = navigateToBikeScreen
             )
         }
-    }
-    if (searchAppBarState != SearchAppBarState.TRIGGERED || getCategoryState != GetCategoryState.TRIGGERED) {
+    } else {
         when (allBikes) {
             RequestState.Loading -> {
                 ProgressBox()

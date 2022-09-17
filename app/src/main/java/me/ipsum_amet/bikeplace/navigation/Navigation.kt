@@ -21,8 +21,8 @@ fun SetUpNavigation(navController: NavHostController, bikePlaceViewModel: BikePl
         )
         signInComposable(
             navigateToRegisterScreen = screen.signIn,
-            // navigateToListScreen = screen.bike,
-            navigateToListScreen = screen.home,
+            navigateToListScreen = screen.bike,
+            //navigateToListScreen = screen.home,
             navigateToResetPasswordScreen = screen.reset,
             bikePlaceViewModel = bikePlaceViewModel,
         )
