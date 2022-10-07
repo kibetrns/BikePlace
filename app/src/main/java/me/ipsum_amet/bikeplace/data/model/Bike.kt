@@ -17,7 +17,6 @@ data class Bike(
     var condition: CONDITION? = null,
     var type: TYPE? = null
 ) : Serializable {
-
     fun toMap() = mapOf(
         "bikeId" to bikeId,
         "userId" to userId,
@@ -29,7 +28,5 @@ data class Bike(
         "condition" to condition,
         "type" to type
     )
-
-
 }
 

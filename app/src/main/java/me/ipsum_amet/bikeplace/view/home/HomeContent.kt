@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.*
@@ -38,7 +41,11 @@ fun HomeContent(
             .fillMaxSize()
     ) {
         item {
-            Text(text = "Hello ${user.fullName?.take(7)}...",)
+            Text(
+                text = "Hello \uD83D\uDC4B\uD83C\uDFFF ${user.fullName?.take(7)}...",
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = FontFamily.Serif
+            )
         }
         item {
             Row(
@@ -46,9 +53,15 @@ fun HomeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Top Choices")
+                Text(
+                    text = "Top Choices",
+                    fontWeight = FontWeight.Bold
+                )
                 TextButton(onClick = { navigateToTopChoiceBikes() }) {
-                    Text(text = "show more")
+                    Text(
+                        text = "show more",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -76,7 +89,10 @@ fun HomeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Categories")
+                Text(
+                    text = "Categories",
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
         item {
