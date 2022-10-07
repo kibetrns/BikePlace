@@ -6,6 +6,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'kotlin-parcelize'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -22,11 +23,19 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        Properties properties = new  Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+        buildConfigField "String", "DARAJA_CONSUMER_KEY", "\"${properties.getProperty("DARAJA_CONSUMER_KEY")}\""
+
+        buildConfigField "String", "DARAJA_CONSUMER_SECRET_KEY", "\"${properties.getProperty("DARAJA_CONSUMER_SECRET_KEY")}\""
+
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            //minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -98,7 +107,10 @@ dependencies {
     def ktor_version = "2.1.1"
     implementation "io.ktor:ktor-client-core:$ktor_version"
     implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
     implementation "io.ktor:ktor-client-serialization:$ktor_version"
+    implementation "io.ktor:ktor-client-auth:$ktor_version"
     implementation "io.ktor:ktor-client-logging:$ktor_version"
 
     //Kotlinx-Serialization

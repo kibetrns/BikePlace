@@ -168,9 +168,15 @@ fun RegisterContent(
                     focus.clearFocus(force = true)
                     if(bikePlaceViewModel.validateRegistrationFields()) {
                         if(bikePlaceViewModel.validateSamePassword()) {
-                            bikePlaceViewModel.registerUser()
-                            navigateToSignInScreen()
-                           // displayToast(context = context, "If Account Creation Successful, Sign In Using Created Account")
+                            if( bikePlaceViewModel.validatePhoneNumber() ) {
+                                bikePlaceViewModel.registerUser()
+                                navigateToSignInScreen()
+                            } else {
+                                displayToast(
+                                    context = context,
+                                    "Phone number should be 10 digits long with no spaces and in the format 0712345678"
+                                )
+                            }
                         } else {
                             displayToast(context = context, "Passwords DOESN'T Match")
                         }

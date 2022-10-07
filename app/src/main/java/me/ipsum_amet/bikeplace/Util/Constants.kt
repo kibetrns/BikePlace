@@ -27,6 +27,13 @@ const val HOME_SCREEN_ARGUMENT_KEY_2 = "bikeId"
 const val USERS = "users"
 const val BIKES = "bikes"
 
+const val BUSINESS_SHORT_CODE = 174379
+const val TRANSACTION_TYPE = "CustomerPayBillOnline"
+const val PARTY_B = 174379
+const val CALLBACK_URL = "https://ents6yzosej2.x.pipedream.net/"
+const val ACCOUNT_REFERENCE = "BikePlace Enterprises"
+const val TRANSACTION_DESC = "Payment for Bikes Leased from BikePlace Enterprises"
+const val PASS_KEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
 
 
 

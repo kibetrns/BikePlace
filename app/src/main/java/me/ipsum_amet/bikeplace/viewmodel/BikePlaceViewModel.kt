@@ -1,9 +1,15 @@
 package me.ipsum_amet.bikeplace.viewmodel
 
+import android.app.DatePickerDialog
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
@@ -17,20 +23,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.Util.*
-import me.ipsum_amet.bikeplace.data.model.Bike
-import me.ipsum_amet.bikeplace.data.model.CONDITION
-import me.ipsum_amet.bikeplace.data.model.TYPE
+import me.ipsum_amet.bikeplace.data.model.*
+import me.ipsum_amet.bikeplace.data.model.remote.STKPushRequest
 import javax.inject.Inject
-import me.ipsum_amet.bikeplace.data.model.User
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
+import me.ipsum_amet.bikeplace.data.service.MpesaService
+import java.time.LocalDateTime
 import java.util.*
 
 @HiltViewModel
 class BikePlaceViewModel @Inject constructor(
-    val auth: FirebaseAuth,
-    val db: FirebaseFirestore,
-    val storage: FirebaseStorage,
-    val repository: BikePlaceRepository
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage,
+    private val repository: BikePlaceRepository,
+    private val mpesaService: MpesaService,
 ) : ViewModel() {
 
 
@@ -98,6 +105,58 @@ class BikePlaceViewModel @Inject constructor(
 
     var hoursToLease = mutableStateOf("3")
 
+    var leaseActivationTitle = mutableStateOf("Lease Activation")
+    var leaseActivationDateInput = mutableStateOf(getDate())
+    var leaseActivationTimeInput = mutableStateOf(getTime())
+    var leaseExpiryTitle = mutableStateOf("Lease Expiry")
+    var leaseExpiryDateInput = mutableStateOf(getDate())
+    var leaseExpiryTimeInput = mutableStateOf(getTime())
+
+    private val timestamp = getTimeStamp()
+
+
+
+    private val sTKPushPassword = BUSINESS_SHORT_CODE.toString()+PASS_KEY+timestamp
+    private val pN = user.value?.phoneNumber?.let { transformPhoneNumber(it) }
+    private val encodedPassWord = encodePassword(passWordToEncode = sTKPushPassword)
+    private val amount = calculateTotalCheckoutPrice().toInt()
+
+
+    private var  stkPushRequest = pN?.let {
+        STKPushRequest(
+            accountReference = ACCOUNT_REFERENCE,
+            amount = amount,
+            businessShortCode = BUSINESS_SHORT_CODE,
+            callBackURL = CALLBACK_URL,
+            partyA = it,
+            partyB = PARTY_B,
+            password = encodedPassWord,
+            phoneNumber = it,
+            timestamp = timestamp,
+            transactionDesc = TRANSACTION_DESC,
+            transactionType = TRANSACTION_TYPE
+        )
+    }
+
+
+
+
+
+    /*
+    val bearerTokenStorage = mutableListOf<BearerTokens>()
+
+    fun dddd() {
+        bearerTokenStorage
+            .add(
+                BearerTokens(
+                accessToken = AccessTokenResponse::accessToken.toString(),
+                refreshToken = AccessTokenResponse::accessToken.toString()
+            ))
+
+    }
+
+     */
+
 
     init {
         auth.signOut()
@@ -107,6 +166,8 @@ class BikePlaceViewModel @Inject constructor(
             getUserData(uid = it)
         }
     }
+
+
 
 
     fun registerUser() {
@@ -285,6 +346,8 @@ class BikePlaceViewModel @Inject constructor(
                     user.value = user1
                     inProgress.value = false
                     popUpNotification.value = Event("User Data Retrieved Successfully")
+
+                    Log.d("userData", user.value.toString())
 
                 }
                 .addOnFailureListener { ex: Exception ->
@@ -581,7 +644,8 @@ class BikePlaceViewModel @Inject constructor(
     fun searchDB(query: String){
     _searchedBikes.value = RequestState.Loading
     Log.d("searchDBVM", _searchedBikes.value.toString())
-    viewModelScope.launch(Dispatchers.IO) {
+    viewModelScope.launch(Dispatchers.IO) {        user.value?.phoneNumber?.let { Log.d("phone", it) }
+
         repository.getBikesNameAsFlow(query)
             .onStart {
                 Log.d("searchDBVM", _searchedBikes.value.toString())
@@ -729,6 +793,37 @@ class BikePlaceViewModel @Inject constructor(
             }
         }
     }
+    fun fetchAccessToken() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                mpesaService.loadTokens()
+                Log.d("fetchAccessToken", mpesaService.getAccessToken().toString())
+            }
+        } catch (ex: Exception) {
+            Log.w("main", "Error while making payment")
+        }
+    }
+
+
+
+
+    fun makeMpesaPayment() {
+
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                stkPushRequest?.let {
+                    mpesaService.sendPush(sTKPushRequest = it)
+                }
+                Log.d("encodedPassword", encodedPassWord)
+                Log.d("timeStamp", timestamp)
+
+            }
+        } catch (ex: Exception) {
+            Log.w("main", "Error while making payment")
+        }
+
+
+    }
 
     fun handleDatabaseAction(action: Action) {
 
@@ -768,10 +863,10 @@ class BikePlaceViewModel @Inject constructor(
         }
         this.action.value = Action.NO_ACTION
     }
+
     fun updateSelectedBikeState() {
         _selectedBike.value = null
     }
-
 
     fun updateBikeFields(selectedBike: Bike?) {
         if ( selectedBike != null ) {
@@ -797,7 +892,6 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun validateRegistrationFields(): Boolean {
-
         return fullName.value.isNotEmpty() && emailAddress.value.isNotEmpty() && phoneNumber.value.toString()
             .isNotEmpty() && password.value.isNotEmpty() && confirmedPassword.value.isNotEmpty()
     }
@@ -811,8 +905,13 @@ class BikePlaceViewModel @Inject constructor(
         return emailAddress.value.isNotEmpty() && password.value.isNotEmpty()
     }
 
+    fun validatePhoneNumber(): Boolean {
+        return phoneNumber.value.length == 10 && phoneNumber.value.startsWith('0') && phoneNumber.value[1] == '7'
+    }
 
-
+    fun transformPhoneNumber(phoneNumber: String): Long {
+        return phoneNumber.replaceFirst("0", "254").toLong()
+    }
 
 }
 

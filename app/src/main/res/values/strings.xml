@@ -52,5 +52,6 @@
     <string name="bike_image">Bike Image</string>
     <string name="image_placeholder">Image Placeholder</string>
     <string name="add_photo">Add Photo</string>
+    <string name="calendar_icon">Calendar Icon</string>
 
 </resources>
