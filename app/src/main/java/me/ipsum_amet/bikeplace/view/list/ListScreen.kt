@@ -52,6 +52,7 @@ fun ListScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
+        bottomBar = { BottomNavBar(navController = navController) },
         topBar = {
             ListAppBar(
                 searchAppBarState = searchAppBarState,
@@ -59,19 +60,17 @@ fun ListScreen(
                 bikePlaceViewModel = bikePlaceViewModel
             )
         },
-        content = {
-            ListContent(
-                allBikes = allBikes,
-                searchedBikes = searchedBikes,
-                searchAppBarState = searchAppBarState,
-                navigateToBikeScreen = navigateToBikeScreen
-            )
-        },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToBikeScreen,bikePlaceViewModel)
-        },
-        bottomBar = { BottomNavBar(navController = navController) }
-    )
+        }
+    ) {
+        ListContent(
+            allBikes = allBikes,
+            searchedBikes = searchedBikes,
+            searchAppBarState = searchAppBarState,
+            navigateToBikeScreen = navigateToBikeScreen
+        )
+    }
 }
 
 

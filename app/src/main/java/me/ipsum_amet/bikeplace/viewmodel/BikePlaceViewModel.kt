@@ -60,7 +60,7 @@ class BikePlaceViewModel @Inject constructor(
     var bikeCondition = mutableStateOf(CONDITION.AVERAGE)
     var bikeDescription = mutableStateOf("")
     var bikeImageUrl = mutableStateOf("")
-    var bikePrice = mutableStateOf("0")
+    var bikePrice = mutableStateOf("0.00")
     var isBooked = mutableStateOf(false)
 
     var imageData = mutableStateOf<Uri?>(null)

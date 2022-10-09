@@ -83,7 +83,7 @@ fun NavGraphBuilder.searchNavGraph(navController: NavHostController, bikePlaceVi
                 navigateToBikeScreen = { bikeId: String ->
                     navController.navigate("bikeEntry/$bikeId") {
                         popUpTo(SearchScreen.Search.route)
-                        launchSingleTop = false
+                        launchSingleTop = true
                     }
                 },
                 bikePlaceViewModel = bikePlaceViewModel,
