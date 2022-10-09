@@ -8,7 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.components.BottomNavBar
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
@@ -16,6 +18,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 fun BikeScreen(
     bikePlaceViewModel: BikePlaceViewModel,
     selectedBike: Bike?,
+    navController: NavHostController,
     navigateToListScreen: (Action) -> Unit
 ) {
     val bikeName by remember { bikePlaceViewModel.bikeName }
@@ -51,6 +54,7 @@ fun BikeScreen(
 
             )
         },
+        //bottomBar = { BottomNavBar(navController = navController) },
         content = {
             BikeContent(
                 name = bikeName,

@@ -2,6 +2,7 @@ package me.ipsum_amet.bikeplace.navigation.destinations
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -11,7 +12,8 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 fun NavGraphBuilder.categoryListComposable(
     bikePlaceViewModel: BikePlaceViewModel,
-    navigateToBikeDetailsScreen: (bikeId: String) -> Unit
+    navigateToBikeDetailsScreen: (bikeId: String) -> Unit,
+    navController: NavHostController
 ) {
     composable(
         route = CATEGORY_LIST_SCREEN,
@@ -28,7 +30,11 @@ fun NavGraphBuilder.categoryListComposable(
             bikePlaceViewModel.action.value = action
         }
 
-        ListScreen(navigateToBikeScreen = navigateToBikeDetailsScreen, bikePlaceViewModel = bikePlaceViewModel)
+        ListScreen(
+            navigateToBikeScreen = navigateToBikeDetailsScreen,
+            bikePlaceViewModel = bikePlaceViewModel,
+            navController = navController
+        )
     }
 
 }

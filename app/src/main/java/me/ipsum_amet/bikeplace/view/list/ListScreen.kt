@@ -6,13 +6,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.components.BottomNavBar
 
 @Composable
-fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikePlaceViewModel) {
+fun ListScreen(
+    navigateToBikeScreen: (String) -> Unit,
+    bikePlaceViewModel: BikePlaceViewModel,
+    navController: NavHostController
+) {
 
 
     LaunchedEffect(key1 = true) {
@@ -63,7 +69,8 @@ fun ListScreen(navigateToBikeScreen: (String) -> Unit, bikePlaceViewModel: BikeP
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToBikeScreen,bikePlaceViewModel)
-        }
+        },
+        bottomBar = { BottomNavBar(navController = navController) }
     )
 }
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -16,6 +17,7 @@ import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 fun NavGraphBuilder.bikeComposable(
     navigateToListScreen: (Action) -> Unit,
+    navController: NavHostController,
     bikePlaceViewModel: BikePlaceViewModel
 ) {
     composable(
@@ -43,6 +45,7 @@ fun NavGraphBuilder.bikeComposable(
             BikeScreen(
                 bikePlaceViewModel = bikePlaceViewModel,
                 selectedBike = selectedBike,
+                navController = navController,
                 navigateToListScreen = navigateToListScreen
             )
 
