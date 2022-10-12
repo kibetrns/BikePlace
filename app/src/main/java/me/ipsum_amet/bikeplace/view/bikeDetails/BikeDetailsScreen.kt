@@ -93,7 +93,7 @@ fun BikeDetailsScreen(
                     bike = selectedBike,
                     hoursToLease = hoursToLease,
                     onPayButtonClicked = {
-                        bikePlaceViewModel.makeMpesaPayment()
+
                     },
                     onHoursToLeaseClicked = { bikePlaceViewModel.hoursToLease.value = it },
                     totalPrice = bikePlaceViewModel.calculateTotalCheckoutPrice(),

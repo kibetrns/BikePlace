@@ -1,15 +1,9 @@
 package me.ipsum_amet.bikeplace.viewmodel
 
-import android.app.DatePickerDialog
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
@@ -27,8 +21,6 @@ import me.ipsum_amet.bikeplace.data.model.*
 import me.ipsum_amet.bikeplace.data.model.remote.STKPushRequest
 import javax.inject.Inject
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
-import me.ipsum_amet.bikeplace.data.service.MpesaService
-import java.time.LocalDateTime
 import java.util.*
 
 @HiltViewModel
@@ -37,7 +29,6 @@ class BikePlaceViewModel @Inject constructor(
     private val db: FirebaseFirestore,
     private val storage: FirebaseStorage,
     private val repository: BikePlaceRepository,
-    private val mpesaService: MpesaService,
 ) : ViewModel() {
 
 
@@ -792,37 +783,6 @@ class BikePlaceViewModel @Inject constructor(
                 }
             }
         }
-    }
-    fun fetchAccessToken() {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                mpesaService.loadTokens()
-                Log.d("fetchAccessToken", mpesaService.getAccessToken().toString())
-            }
-        } catch (ex: Exception) {
-            Log.w("main", "Error while making payment")
-        }
-    }
-
-
-
-
-    fun makeMpesaPayment() {
-
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                stkPushRequest?.let {
-                    mpesaService.sendPush(sTKPushRequest = it)
-                }
-                Log.d("encodedPassword", encodedPassWord)
-                Log.d("timeStamp", timestamp)
-
-            }
-        } catch (ex: Exception) {
-            Log.w("main", "Error while making payment")
-        }
-
-
     }
 
     fun handleDatabaseAction(action: Action) {
