@@ -1,15 +1,9 @@
 package me.ipsum_amet.bikeplace.viewmodel
 
-import android.app.DatePickerDialog
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
@@ -28,7 +22,6 @@ import me.ipsum_amet.bikeplace.data.model.remote.STKPushRequest
 import javax.inject.Inject
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
 import me.ipsum_amet.bikeplace.data.service.MpesaService
-import java.time.LocalDateTime
 import java.util.*
 
 @HiltViewModel
@@ -117,11 +110,34 @@ class BikePlaceViewModel @Inject constructor(
 
 
     private val sTKPushPassword = BUSINESS_SHORT_CODE.toString()+PASS_KEY+timestamp
-    private val pN = user.value?.phoneNumber?.let { transformPhoneNumber(it) }
+    private val pN = mutableStateOf("")
     private val encodedPassWord = encodePassword(passWordToEncode = sTKPushPassword)
     private val amount = calculateTotalCheckoutPrice().toInt()
 
 
+    private fun applySTKPushBody(): STKPushRequest? {
+        val phoneNumber = user.value?.phoneNumber
+        val transformedPhoneNumber = phoneNumber?.let { transformPhoneNumber(phoneNumber = it) }
+
+        return transformedPhoneNumber?.let {
+            STKPushRequest(
+                accountReference = ACCOUNT_REFERENCE,
+                amount = 1,
+                businessShortCode = BUSINESS_SHORT_CODE,
+                callBackURL = CALLBACK_URL,
+                partyA = it,
+                partyB = PARTY_B,
+                password = encodedPassWord,
+                phoneNumber = it,
+                timestamp = timestamp,
+                transactionDesc = TRANSACTION_DESC,
+                transactionType = TRANSACTION_TYPE
+            )
+        }
+    }
+
+
+    /*
     private var  stkPushRequest = pN?.let {
         STKPushRequest(
             accountReference = ACCOUNT_REFERENCE,
@@ -137,6 +153,8 @@ class BikePlaceViewModel @Inject constructor(
             transactionType = TRANSACTION_TYPE
         )
     }
+
+     */
 
 
 
@@ -165,6 +183,7 @@ class BikePlaceViewModel @Inject constructor(
         currentUser?.uid?.let {
             getUserData(uid = it)
         }
+       // fetchAccessToken()
     }
 
 
@@ -793,6 +812,7 @@ class BikePlaceViewModel @Inject constructor(
             }
         }
     }
+    /*
     fun fetchAccessToken() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
@@ -804,25 +824,27 @@ class BikePlaceViewModel @Inject constructor(
         }
     }
 
+     */
+
 
 
 
     fun makeMpesaPayment() {
-
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                stkPushRequest?.let {
-                    mpesaService.sendPush(sTKPushRequest = it)
-                }
+                applySTKPushBody()?.let { mpesaService.sendPush(it) }
                 Log.d("encodedPassword", encodedPassWord)
+                Log.d("stkPushBody", applySTKPushBody().toString())
                 Log.d("timeStamp", timestamp)
-
+                Log.d("pN", pN.value)
+                Log.d("user", user.value.toString())
+                Log.d("transformPhoneNumber",
+                    user.value?.phoneNumber?.let { transformPhoneNumber(it) }.toString()
+                )
             }
         } catch (ex: Exception) {
             Log.w("main", "Error while making payment")
         }
-
-
     }
 
     fun handleDatabaseAction(action: Action) {
@@ -910,7 +932,9 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun transformPhoneNumber(phoneNumber: String): Long {
-        return phoneNumber.replaceFirst("0", "254").toLong()
+        val x= phoneNumber.replaceFirst("0", "254").toLong()
+        Log.d("transformPhoneNumber", x.toString())
+        return x
     }
 
 }

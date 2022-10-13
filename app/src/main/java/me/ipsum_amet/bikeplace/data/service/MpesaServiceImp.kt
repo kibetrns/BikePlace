@@ -31,9 +31,16 @@ class MpesaServiceImp @Inject constructor(
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
     private val accessTokens = mutableListOf<AccessTokenResponse>()
 
+    lateinit var tokenInfo: String
+    lateinit var reloadedTokenInfo: BearerTokens
+
+    suspend fun loadTokenInfo() = scope.launch {
+        tokenInfo = getAccessToken().accessToken
+        bearerTokenStorage.add(BearerTokens(accessToken = tokenInfo, refreshToken = tokenInfo))
+    }
 
 
-
+/*
     override fun loadTokens() = scope.launch(Dispatchers.IO) {
         accessTokens.add(getAccessToken())
         bearerTokenStorage.add(BearerTokens(
@@ -45,8 +52,13 @@ class MpesaServiceImp @Inject constructor(
 
     }
 
+ */
+
+
+
     @OptIn(ExperimentalSerializationApi::class)
     val service2 = HttpClient(CIO) {
+
         engine {
             maxConnectionsCount = 1000
             endpoint {
@@ -62,6 +74,7 @@ class MpesaServiceImp @Inject constructor(
             level = LogLevel.ALL
             logger = Logger.ANDROID
         }
+
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -71,19 +84,41 @@ class MpesaServiceImp @Inject constructor(
             })
         }
 
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    bearerTokenStorage.last()
+                }
+                refreshTokens {
+                    bearerTokenStorage.last()
+                }
+            }
+        }
+
+
+       defaultRequest {
+           headers {
+               append(HttpHeaders.ContentType, "application/json")
+               //append(HttpHeaders.Authorization, "Bearer $tokenInfo")
+           }
+       }
     }
 
 
     override suspend fun sendPush(sTKPushRequest: STKPushRequest) {
-
+        loadTokenInfo().join()
          val x = service2.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest") {
-             headers {
-                 append(HttpHeaders.ContentType, "application/json")
-                 append(HttpHeaders.Authorization, "BEARER ${bearerTokenStorage.last()}")
-             }
             setBody(body = sTKPushRequest)
         }
-
+        Log.d("sendPush",
+            """
+                ->>>>>>>> ${x.headers} 
+               ->>>>>>>> ${x.status}
+               ->>>>>>>>  ${x.call}
+                ->>>>>>>> $x
+                ->>>>>>>> $tokenInfo
+            """.trimIndent()
+        )
     }
 
     override suspend fun getAccessToken(): AccessTokenResponse {

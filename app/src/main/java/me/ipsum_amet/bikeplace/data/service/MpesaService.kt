@@ -12,5 +12,5 @@ interface MpesaService {
     suspend fun sendPush(sTKPushRequest: STKPushRequest)
 
     suspend fun getAccessToken(): AccessTokenResponse
-    fun loadTokens(): Job
+    //fun loadTokens(): Job
 }
