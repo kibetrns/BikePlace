@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.Util
+package me.ipsum_amet.bikeplace.util
 
 const val REALM_SCHEMA_VERSION = 0L
 const val REALM_DB_NAME = "BikePlace.db"
@@ -30,12 +30,25 @@ const val BIKES = "bikes"
 const val BUSINESS_SHORT_CODE = 174379
 const val TRANSACTION_TYPE = "CustomerPayBillOnline"
 const val PARTY_B = 174379
-const val CALLBACK_URL = "https://ents6yzosej2.x.pipedream.net/"
+const val CALLBACK_URL = "https://9cce-41-89-227-170.eu.ngrok.io/api/v1/mobile-payment/saf/stk-transaction-result"
 const val CALLBACK_URL_2 = "https://enejup2x16w58.x.pipedream.net/"
 const val CALLBACK_URL_3 = "https://eo10qkgopt08moe.m.pipedream.net"
 const val ACCOUNT_REFERENCE = "BikePlace Enterprises"
 const val TRANSACTION_DESC = "Payment for Bikes Leased from BikePlace Enterprises"
 const val PASS_KEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
+
+const val BP_API_BASE_URL = "https://9cce-41-89-227-170.eu.ngrok.io"
+
+const val VAT_CONST = 12.34
+
+sealed class BPAPIEndpoints(val url: String) {
+    object MpesaExpress: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/mobile-payment/saf/stk-transaction-request")
+
+    object UserBookingInfoByUserId: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/user-bookings-info")
+
+    object BookingInfoByReceiptId: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/bookings-info-by-receipt-id")
+
+}
 
 
 

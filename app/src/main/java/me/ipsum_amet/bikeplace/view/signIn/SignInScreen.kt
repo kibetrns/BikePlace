@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 import me.ipsum_amet.bikeplace.view.bikeEntry.displayToast
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel

@@ -1,17 +1,24 @@
 package me.ipsum_amet.bikeplace.navigation.graphs
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.*
 import androidx.navigation.compose.composable
-import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.util.Action
+import me.ipsum_amet.bikeplace.view.summary.SummaryScreen
 import me.ipsum_amet.bikeplace.view.bikeDetails.BikeDetailsScreen
+import me.ipsum_amet.bikeplace.view.confirmation.ConfirmationScreen
 import me.ipsum_amet.bikeplace.view.home.HomeScreen
 import me.ipsum_amet.bikeplace.view.list.listByCategory.ListByCategoryScreen
 import me.ipsum_amet.bikeplace.view.list.listByTopChoices.ListTopChoiceScreen
+import me.ipsum_amet.bikeplace.view.locationDropOff.LocationDropOffScreen
+import me.ipsum_amet.bikeplace.view.booking.BookingScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
+@RequiresApi(Build.VERSION_CODES.N)
 fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceViewModel: BikePlaceViewModel) {
 
     navigation(
@@ -74,6 +81,9 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
             navigateToPreviousScreen = { action: Action ->
                 navController.navigateUp()
                 bikePlaceViewModel.action.value = action
+            },
+            navigateToSummaryScreen = {
+                navController.navigate(HomeScreen.Summary.route)
             }
         )
     }
@@ -133,6 +143,61 @@ fun NavGraphBuilder.homeNavGraph(navController: NavHostController, bikePlaceView
             }
         }
     }
+
+    composable(route = HomeScreen.LocationDropOff.route) {
+        LocationDropOffScreen(
+            navigateToPreviousScreen = {
+                navController.navigateUp()
+            },
+            navigateToSummaryScreen = {
+                navController.navigate(HomeScreen.Summary.route)
+            },
+            bikePlaceViewModel = bikePlaceViewModel
+        )
+    }
+
+    composable(route = HomeScreen.Summary.route) {
+        SummaryScreen(
+            navigateToPreviousScreen = {
+                navController.navigateUp()
+            },
+            navigateToBookingDetails = {
+                navController.navigate(HomeScreen.Booking.route)
+            },
+            navigateToConfirmationScreen = {
+                navController.navigate(HomeScreen.ConfirmationScreen.route)
+            },
+            navigateToLocationDropOffScreen = {
+                navController.navigate(HomeScreen.LocationDropOff.route)
+            },
+            bikePlaceViewModel = bikePlaceViewModel,
+            )
+    }
+    composable(route = HomeScreen.ConfirmationScreen.route) {
+        ConfirmationScreen(
+            navigateToPreviousScreen = {
+                navController.navigateUp()
+            },
+            navigateToBookingDetails = {
+                navController.navigate(HomeScreen.Booking.route)
+            },
+            navigateToHomeScreen = {
+                navController.navigate(HomeScreen.Home.route)
+            },
+            bikePlaceViewModel = bikePlaceViewModel
+        )
+    }
+    composable(route = HomeScreen.Booking.route) {
+        BookingScreen(
+            navigateToHomeScreen = {
+                navController.navigate(HomeScreen.Booking.route)
+            },
+            navigateToPreviousScreen = {
+                navController.navigateUp()
+            },
+            bikePlaceViewModel = bikePlaceViewModel
+        )
+    }
 }
 
 sealed class HomeScreen(val route: String) {
@@ -140,4 +205,9 @@ sealed class HomeScreen(val route: String) {
     object BikeDetails: HomeScreen(route = "bikeDetails/{bikeId}")
     object CategoryList: HomeScreen(route = "categoryList/{bikeId}")
     object TopChoiceList: HomeScreen(route = "topChoiceList")
+    object LocationDropOff: HomeScreen(route = "locationDropOff")
+    object Summary: HomeScreen(route = "summary")
+    object Booking: HomeScreen(route = "booking")
+    object ConfirmationScreen: HomeScreen(route = "confirmation")
+
 }

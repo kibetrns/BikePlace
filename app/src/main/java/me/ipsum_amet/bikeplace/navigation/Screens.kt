@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navDeepLink
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 class Screens(navController: NavController) {

@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.*
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.data.model.CONDITION

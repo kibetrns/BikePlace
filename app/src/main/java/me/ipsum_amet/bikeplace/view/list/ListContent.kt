@@ -28,7 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.Message
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.data.model.Bike
@@ -49,7 +49,7 @@ fun ListContent(
     if (getCategoryState == GetCategoryState.TRIGGERED) {
         when (allBikesByCategory) {
             RequestState.Loading -> {
-                ProgressBox()
+                    ProgressBox()
             }
             RequestState.Idle -> {
                 ProgressBox()

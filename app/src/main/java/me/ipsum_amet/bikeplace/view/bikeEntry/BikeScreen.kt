@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 

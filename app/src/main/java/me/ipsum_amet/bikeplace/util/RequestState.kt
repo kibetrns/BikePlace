@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.Util
+package me.ipsum_amet.bikeplace.util
 
 sealed class RequestState<out T> {
     object Idle : RequestState<Nothing>()

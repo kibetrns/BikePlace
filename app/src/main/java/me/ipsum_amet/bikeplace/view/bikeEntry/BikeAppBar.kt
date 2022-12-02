@@ -13,7 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.components.DisplayAlertDialog
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.R

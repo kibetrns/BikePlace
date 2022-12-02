@@ -53,5 +53,23 @@
     <string name="image_placeholder">Image Placeholder</string>
     <string name="add_photo">Add Photo</string>
     <string name="calendar_icon">Calendar Icon</string>
+    <string name="edit_icon">Edit Icon</string>
+    <string name="home_work_icon">Home Work Icon</string>
+    <string name="address_icon">Address Icon</string>
+    <string name="email_icon">Email Icon</string>
+    <string name="title">Title</string>
+    <string name="enter_title">e.g., Home, Office</string>
+    <string name="area">Area</string>
+    <string name="enter_area">e.g., Nairobi, Nyeri</string>
+    <string name="street_name">Street/Road Name</string>
+    <string name="enter_street_name">e.g., Mweiga-Nyeri, #532943</string>
+    <string name="more_info">More Info.</string>
+    <string name="enter_more_info"> Provide further details about the address e.g., building and floor name </string>
+    <string name="cancel_icon">Cancel Icon</string>
+    <string name="directions_bike">Directions Bike</string>
+    <string name="success_confirmation">Success Confirmation Illustration</string>
+    <string name="bookingId_icon">BookingId Icon </string>
+    <string name="credit_card_icon">Credit Card Icon</string>
+    <string name="mpesa_africa_icon">Mpesa Icon</string>
 
 </resources>

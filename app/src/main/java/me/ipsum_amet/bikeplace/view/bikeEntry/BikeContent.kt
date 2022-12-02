@@ -19,7 +19,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.ConditionDropDown
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.components.TypeDropDown

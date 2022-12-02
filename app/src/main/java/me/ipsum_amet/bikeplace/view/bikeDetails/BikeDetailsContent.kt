@@ -29,7 +29,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.data.model.CONDITION
@@ -50,10 +50,10 @@ fun BikeDetailsContent(
     leaseExpiryDateInput: String,
     leaseExpiryTimeInput: String,
     modifier: Modifier = Modifier,
-    onLeaseActivationDateClicked: () -> Unit,
-    onLeaseActivationTimeClicked: () -> Unit,
-    onLeaseExpiryDateClicked: () -> Unit,
-    onLeaseExpiryTimeClicked: () -> Unit,
+    onLeaseActivationDateClicked: (String) -> Unit,
+    onLeaseActivationTimeClicked: (String) -> Unit,
+    onLeaseExpiryDateClicked: (String) -> Unit,
+    onLeaseExpiryTimeClicked: (String) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -291,7 +291,7 @@ fun LeaseIntervals(
         IntervalEntry(
             timeInput = textValue,
             icon = icon,
-            onIntervalClicked = onIntervalClicked,
+            onIntervalClicked = { onIntervalClicked()},
             borderColor = MaterialTheme.colors.surface.copy(ContentAlpha.disabled)
         )
 
@@ -305,14 +305,14 @@ fun IntervalEntry(
     timeInput: String,
     borderColor: Color,
     icon: ImageVector,
-    onIntervalClicked: () -> Unit
+    onIntervalClicked: (String) -> Unit
 ) {
     Surface(
             border = BorderStroke(
                 width = CHIP_WIDTH,
                 color = borderColor
             ),
-            onClick =  onIntervalClicked,
+            onClick =  { onIntervalClicked(timeInput) },
             elevation = TIME_INTERVAL_ELEVATION,
     ) {
         Row(
@@ -339,8 +339,8 @@ fun IntervalSection(
     cardBorderColor: Color,
     dateAndTimeBorderColor: Color,
     modifier: Modifier = Modifier,
-    onLeaseDateClicked: () -> Unit,
-    onLeaseTimeClicked: () -> Unit,
+    onLeaseDateClicked: (String) -> Unit,
+    onLeaseTimeClicked: (String) -> Unit,
 ) {
     Card(
         border = BorderStroke(width = BIKE_CARD_WIDTH, color = cardBorderColor),
@@ -371,7 +371,7 @@ fun IntervalSection(
                         timeInput = dateInput,
                         icon = Icons.Default.CalendarToday,
                         borderColor = dateAndTimeBorderColor,
-                        onIntervalClicked = onLeaseDateClicked,
+                        onIntervalClicked =  onLeaseDateClicked ,
                     )
                 }
                 Column() {
@@ -381,7 +381,7 @@ fun IntervalSection(
                         timeInput = timeInput,
                         icon = Icons.Default.Schedule,
                         borderColor = dateAndTimeBorderColor,
-                        onIntervalClicked = onLeaseTimeClicked
+                        onIntervalClicked =  onLeaseTimeClicked
                     )
                 }
             }
@@ -399,10 +399,10 @@ fun BookingGroup(
     leaseExpiryDateInput: String,
     leaseExpiryTimeInput: String,
     modifier: Modifier = Modifier,
-    onLeaseActivationDateClicked: () -> Unit,
-    onLeaseActivationTimeClicked: () -> Unit,
-    onLeaseExpiryDateClicked: () -> Unit,
-    onLeaseExpiryTimeClicked: () -> Unit,
+    onLeaseActivationDateClicked: (String) -> Unit,
+    onLeaseActivationTimeClicked: (String) -> Unit,
+    onLeaseExpiryDateClicked: (String) -> Unit,
+    onLeaseExpiryTimeClicked: (String) -> Unit,
 ) {
 
     Card(modifier = modifier) {

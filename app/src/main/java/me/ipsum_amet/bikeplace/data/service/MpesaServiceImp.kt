@@ -17,12 +17,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import me.ipsum_amet.bikeplace.data.dto.request.BookingsReq
 import me.ipsum_amet.bikeplace.data.model.remote.AccessTokenResponse
 import me.ipsum_amet.bikeplace.data.model.remote.STKPushRequest
+import me.ipsum_amet.bikeplace.util.BPAPIEndpoints
 import javax.inject.Inject
+import javax.inject.Named
 
+@OptIn(ExperimentalSerializationApi::class)
 class MpesaServiceImp @Inject constructor(
-    private val service: HttpClient
+     @Named("mpesa") private val mpesaAuthService: HttpClient,
+     @Named("default") private val defaultBPService: HttpClient
 ) : MpesaService {
 
     private val isAuthTokesAvailable = true
@@ -38,6 +43,7 @@ class MpesaServiceImp @Inject constructor(
         tokenInfo = getAccessToken().accessToken
         bearerTokenStorage.add(BearerTokens(accessToken = tokenInfo, refreshToken = tokenInfo))
     }
+
 
 
 /*
@@ -56,7 +62,6 @@ class MpesaServiceImp @Inject constructor(
 
 
 
-    @OptIn(ExperimentalSerializationApi::class)
     val service2 = HttpClient(CIO) {
 
         engine {
@@ -110,6 +115,7 @@ class MpesaServiceImp @Inject constructor(
          val x = service2.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest") {
             setBody(body = sTKPushRequest)
         }
+
         Log.d("sendPush",
             """
                 ->>>>>>>> ${x.headers} 
@@ -122,7 +128,10 @@ class MpesaServiceImp @Inject constructor(
     }
 
     override suspend fun getAccessToken(): AccessTokenResponse {
-        return service.get("https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials") {
+        Log.d("serviceMpesa", mpesaAuthService.attributes.toString())
+        return mpesaAuthService.get("https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials") {
         }.body()
     }
+
+
 }

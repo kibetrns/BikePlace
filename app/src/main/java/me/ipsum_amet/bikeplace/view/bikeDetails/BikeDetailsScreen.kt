@@ -8,17 +8,19 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import me.ipsum_amet.bikeplace.Util.Action
+import kotlinx.datetime.LocalDateTime
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 import java.util.*
+import kotlin.math.min
 
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun BikeDetailsScreen(
     bikePlaceViewModel: BikePlaceViewModel,
     selectedBike: Bike?,
-    navigateToPreviousScreen: (Action) -> Unit
+    navigateToPreviousScreen: (Action) -> Unit,
+    navigateToSummaryScreen: () -> Unit
 ) {
     val hoursToLease by remember { bikePlaceViewModel.hoursToLease }
     val leaseActivationTitle by remember { bikePlaceViewModel.leaseActivationTitle}
@@ -28,13 +30,28 @@ fun BikeDetailsScreen(
     var leaseExpiryDateInput by remember { bikePlaceViewModel.leaseExpiryDateInput }
     var leaseExpiryTimeInput by remember { bikePlaceViewModel.leaseExpiryTimeInput }
 
+    val totalPrice = bikePlaceViewModel.calculateTotalCheckoutPrice()
+
+
+
+
+
+
     val context = LocalContext.current
+
 
     val year: Int
     val month: Int
     val day: Int
     val hour: Int
     val minute: Int
+
+
+
+    //val kotlinDateTime = LocalDateTime(leaseActivationDateInput, leaseActivationTimeInput)
+
+
+
 
 
     val calendar = Calendar.getInstance()
@@ -52,14 +69,32 @@ fun BikeDetailsScreen(
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            leaseActivationDateInput = "$dayOfMonth-$month-$year"
+            leaseActivationDateInput = if( month in 0..9 && dayOfMonth in 0..9 ) {
+                "0$dayOfMonth-0$month-$year"
+            } else if (month in 0..9 && dayOfMonth > 9) {
+                "$dayOfMonth-0$month-$year"
+            } else if (month > 9 && dayOfMonth in 0..9) {
+                "0$dayOfMonth-$month-$year"
+            }
+            else {
+                "$dayOfMonth-$month-$year"
+            }
         }, year, month, day
     )
 
     val datePickerDialog2 = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            leaseExpiryDateInput = "$dayOfMonth-$month-$year"
+            leaseExpiryDateInput = if( month in 0..9 && dayOfMonth in 0..9 ) {
+                "0$dayOfMonth-0$month-$year"
+            } else if (month in 0..9 && dayOfMonth > 9) {
+                "$dayOfMonth-0$month-$year"
+            } else if (month > 9 && dayOfMonth in 0..9) {
+                "0$dayOfMonth-$month-$year"
+            }
+            else {
+                "$dayOfMonth-$month-$year"
+            }
         }, year, month, day
     )
 
@@ -67,55 +102,84 @@ fun BikeDetailsScreen(
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hour: Int, minute: Int ->
-            leaseActivationTimeInput = "$hour:$minute"
+            leaseActivationTimeInput = if( hour in 0..9 && minute in 0..9 ) {
+                "0$hour:0$minute"
+            } else if( minute in 0..9 && hour > 9 ) {
+                "$hour:0$minute"
+            } else if (hour in 0..9 && minute > 9 )
+                "0$hour:$minute"
+            else {
+                "$hour:$minute"
+            }
         }, hour, minute , true
     )
     val timePickerDialog2 = TimePickerDialog(
         context,
         { _, hour: Int, minute: Int ->
-            leaseExpiryTimeInput = "$hour:$minute"
+           leaseExpiryTimeInput = if( hour in 0..9 && minute in 0..9 ) {
+               "0$hour:0$minute"
+           } else if( minute in 0..9 && hour > 9 ) {
+               "$hour:0$minute"
+           } else if (hour in 0..9 && minute > 9 )
+               "0$hour:$minute"
+           else {
+               "$hour:$minute"
+           }
+
         }, hour, minute , true
     )
+    /*
+     else if ( hour in 0..9 && minute in 0..9)
+            "0$hour:0$minute"
+     */
+
 
     Scaffold(
         topBar = {
-            BikeDetailsAppBar(
-                navigateToPreviousScreen = { action: Action ->
-                    if ( action == Action.NO_ACTION ) {
-                        navigateToPreviousScreen(action)
-                    }
+            PlainAppBar(title = "") { action: Action ->
+                if (action == Action.NO_ACTION) {
+                    navigateToPreviousScreen(action)
                 }
-            )
+            }
         },
         content = {
             if (selectedBike != null) {
-                BikeDetailsContent(
-                    bike = selectedBike,
-                    hoursToLease = hoursToLease,
-                    onPayButtonClicked = {
-                        bikePlaceViewModel.makeMpesaPayment()
-                    },
-                    onHoursToLeaseClicked = { bikePlaceViewModel.hoursToLease.value = it },
-                    totalPrice = bikePlaceViewModel.calculateTotalCheckoutPrice(),
-                    leaseActivationTitle = leaseActivationTitle,
-                    leaseActivationDateInput = leaseActivationDateInput,
-                    leaseActivationTimeInput = leaseActivationTimeInput,
-                    leaseExpiryTitle = leaseExpiryTitle,
-                    leaseExpiryDateInput = leaseExpiryDateInput,
-                    leaseExpiryTimeInput = leaseExpiryTimeInput,
-                    onLeaseActivationDateClicked = {
-                        datePickerDialog.show()
-                    },
-                    onLeaseActivationTimeClicked = {
-                        timePickerDialog.show()
-                    },
-                    onLeaseExpiryDateClicked = {
-                        datePickerDialog2.show()
-                    },
-                    onLeaseExpiryTimeClicked = {
-                        timePickerDialog2.show()
-                    },
-                )
+                if (totalPrice != null) {
+                    BikeDetailsContent(
+                        bike = selectedBike,
+                        hoursToLease = hoursToLease,
+                        onPayButtonClicked = {
+                            //bikePlaceViewModel.makeMpesaPayment()
+                            navigateToSummaryScreen()
+                        },
+                        onHoursToLeaseClicked = { bikePlaceViewModel.hoursToLease.value = it },
+                        totalPrice = totalPrice,
+                        leaseActivationTitle = leaseActivationTitle,
+                        leaseActivationDateInput = leaseActivationDateInput,
+                        leaseActivationTimeInput = leaseActivationTimeInput,
+                        leaseExpiryTitle = leaseExpiryTitle,
+                        leaseExpiryDateInput = leaseExpiryDateInput,
+                        leaseExpiryTimeInput = leaseExpiryTimeInput,
+                        onLeaseActivationDateClicked = {
+                            datePickerDialog.show()
+                            bikePlaceViewModel.leaseActivationDateInput.value = it
+
+                        },
+                        onLeaseActivationTimeClicked = {
+                            timePickerDialog.show()
+                            bikePlaceViewModel.leaseActivationTimeInput.value = it
+                        },
+                        onLeaseExpiryDateClicked = {
+                            datePickerDialog2.show()
+                            bikePlaceViewModel.leaseExpiryDateInput.value = it
+                        },
+                        onLeaseExpiryTimeClicked = {
+                            timePickerDialog2.show()
+                            bikePlaceViewModel.leaseExpiryTimeInput.value = it
+                        },
+                    )
+                }
+
             }
         }
     )

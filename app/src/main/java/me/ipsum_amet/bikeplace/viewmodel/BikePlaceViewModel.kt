@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
@@ -16,7 +17,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.data.dto.request.BookingsInfoReq
+import me.ipsum_amet.bikeplace.data.dto.request.BookingsReq
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.data.model.*
 import me.ipsum_amet.bikeplace.data.model.remote.STKPushRequest
 import javax.inject.Inject
@@ -30,7 +33,7 @@ class BikePlaceViewModel @Inject constructor(
     private val db: FirebaseFirestore,
     private val storage: FirebaseStorage,
     private val repository: BikePlaceRepository,
-    private val mpesaService: MpesaService,
+   private val mpesaService: MpesaService,
 ) : ViewModel() {
 
 
@@ -46,11 +49,31 @@ class BikePlaceViewModel @Inject constructor(
     var password: MutableState<String> = mutableStateOf("")
     var confirmedPassword: MutableState<String> = mutableStateOf("")
 
-    var emailAddress: MutableState<String> = mutableStateOf("")
-    var fullName: MutableState<String> = mutableStateOf("")
+    var emailAddress = mutableStateOf("")
+    var fullName  = mutableStateOf("")
     var imageUrl = mutableStateOf("")
-    var location = mutableStateOf("")
-    var phoneNumber: MutableState<String> = mutableStateOf("")
+
+
+
+    var title = mutableStateOf<String?>("")
+    var area = mutableStateOf<String?>("")
+    var streetName = mutableStateOf<String?>("")
+    var moreInfo = mutableStateOf<String?>("")
+    var geoPoint = mutableStateOf<GeoPoint?>(null)
+
+    var dropOffLocation  = BikeDropOffAddress(
+        title = title.value,
+        area = area.value,
+        streetName = streetName.value,
+        moreInfo = moreInfo.value
+    )
+
+    var bikeDropOffAddress  = mutableStateOf(user.value?.dropOffLocation)
+
+
+    var phoneNumber = mutableStateOf("")
+    var currentLocation = mutableStateOf<GeoPoint?>(null)
+    var orderBikes = mutableStateOf<List<Bike>?>(null)
 
 
     private val bike = mutableStateOf<Bike?>(null)
@@ -82,7 +105,20 @@ class BikePlaceViewModel @Inject constructor(
     private val _searchedBikes = MutableStateFlow<RequestState<List<Bike>>>(RequestState.Idle)
     val searchedBikes: StateFlow<RequestState<List<Bike>>> = _searchedBikes
 
-    private val _selectedBike: MutableStateFlow<Bike?> = MutableStateFlow(null)
+    private val _selectedBike: MutableStateFlow<Bike?> = MutableStateFlow(Bike(
+        bikeId = null,
+        userId = null,
+        name = null,
+        price = 1.0,
+        imageUrl = null,
+        description = null,
+        isBooked = null,
+        postedAt = null,
+        modifiedAt = null,
+        condition = null,
+        type = null,
+        leaseStatus = null
+    ))
     val selectedBike: StateFlow<Bike?> = _selectedBike
 
     private val _topBikeChoices: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
@@ -108,11 +144,124 @@ class BikePlaceViewModel @Inject constructor(
     private val timestamp = getTimeStamp()
 
 
-
     private val sTKPushPassword = BUSINESS_SHORT_CODE.toString()+PASS_KEY+timestamp
     private val pN = mutableStateOf("")
     private val encodedPassWord = encodePassword(passWordToEncode = sTKPushPassword)
-    private val amount = calculateTotalCheckoutPrice().toInt()
+    private val amount = calculateTotalCheckoutPrice()?.toInt()
+
+    private val _userDetails: MutableStateFlow<User?> = MutableStateFlow(null)
+    val userDetails = _userDetails
+
+    private val _bookingsInfo = MutableStateFlow<RequestState<List<BookingInfo>>>(RequestState.Idle)
+    val bookingsInfo = _bookingsInfo
+
+    private val returnStatus = mutableStateOf(ReturnStatus.PENDING)
+
+    val summarySubtotal = mutableStateOf( calculatePricingGivenDates(
+        leaseActivationDateTime = formatDateTimeForServer(
+            leaseActivationDateInput.value,
+            leaseActivationTimeInput.value
+        ),
+        leaseExpiryDateTime = formatDateTimeForServer(
+            leaseExpiryDateInput.value,
+            leaseExpiryTimeInput.value
+        ),
+        pricingPerHour = _selectedBike.value?.price!!
+    )
+    )
+
+    val dropOffCost = mutableStateOf(1.0)
+
+    val totalSummaryPaymentAmount = mutableStateOf(
+        calculateFinalCheckoutPaymentAmount(
+            VAT = calculateTotalVATAmount(
+                subTotal = summarySubtotal.value,
+                dropOffCharge = dropOffCost.value,
+                VAT = VAT_CONST
+            ),
+            subTotal = summarySubtotal.value,
+            dropOffCharge = dropOffCost.value
+        )
+    )
+
+
+    val VAT = mutableStateOf( calculateTotalVATAmount(
+        subTotal = summarySubtotal.value,
+        dropOffCharge = dropOffCost.value,
+        VAT = VAT_CONST
+    ) )
+
+    /*
+    private val bRAmount = 1
+    private val bRBikeId = selectedBike.value?.bikeId
+    private val bRBikeLeaseActivation = formatDateTimeForServer(leaseActivationDateInput.value, leaseActivationTimeInput.value)
+    private val bRBikeLeaseExpiry = formatDateTimeForServer(leaseExpiryDateInput.value, leaseActivationTimeInput.value)
+    private val bRBikeName   = selectedBike.value?.name
+    private val bRBikeDropOffLocation = dropOffLocation
+    private val bRUserName = user.value?.fullName
+    private val bRUserId = user.value?.userId
+    private val bRUserPhoneNumber = user.value?.phoneNumber?.let {
+        transformPhoneNumber(it)
+    }
+
+     */
+/*
+    fun logBookingsReq(){
+        Log.d("logBkReqAm", bRAmount.toString() )
+        Log.d("logBkReqBI", bRBikeId.toString() )
+        Log.d("logBkReqLA", bRBikeLeaseActivation.toString() )
+        Log.d("logBkReqLE", bRBikeLeaseExpiry.toString() )
+        Log.d("logBkReqBN", bRBikeName.toString() )
+        Log.d("logBkReqDOL", bRBikeDropOffLocation.toString() )
+        Log.d("logBkReqUn", bRUserName.toString() )
+        Log.d("logBkReqUId", bRUserId.toString() )
+        Log.d("logBkReqUPN", bRUserPhoneNumber.toString() )
+    }                bikePlaceViewModel.calculateTotalCheckoutPrice()?.let { it1 ->
+
+
+ */
+
+
+
+    private fun applybookingsReqBody(): BookingsReq? {
+        val bRAmount = calculateTotalCheckoutPrice()?.plus(dropOffCost.value)?.plus(VAT.value)
+        val bRBikeId = selectedBike.value?.bikeId
+        val bRBikeLeaseActivation = formatDateTimeForServer(
+            leaseActivationDateInput.value,
+            leaseActivationTimeInput.value
+        )
+        val bRBikeLeaseExpiry = formatDateTimeForServer(
+            leaseExpiryDateInput.value,
+            leaseExpiryTimeInput.value
+        )
+        val bRBikeName   = selectedBike.value?.name
+        val bRBikeDropOffLocation = dropOffLocation
+        val bRUserName = user.value?.fullName
+        val bRUserId = user.value?.userId
+        val bRUserPhoneNumber = user.value?.phoneNumber?.let {
+            transformPhoneNumber(it)
+        }
+        val bRReturnStatus = returnStatus.value
+        //return if (bRBikeName != null && bRBikeId != null && bRUserId != null && bRUserPhoneNumber != null && bRUserName != null) {
+           val x = bRAmount?.let {
+               BookingsReq(
+                   amount = it.toInt(),
+                   bikeId = bRBikeId!!,
+                   bikeLeaseActivation = bRBikeLeaseActivation,
+                   bikeLeaseExpiry = bRBikeLeaseExpiry,
+                   bikeName = bRBikeName!!,
+                   bikeDropOffLocation = bRBikeDropOffLocation,
+                   userName = bRUserName!!,
+                   userId = bRUserId!!,
+                   userPhoneNumber = bRUserPhoneNumber!!,
+                   bikeReturnStatus = bRReturnStatus
+               )
+           }
+        Log.d("AAAAABBBBBRRBB", x.toString())
+        return x
+
+    }
+
 
 
     private fun applySTKPushBody(): STKPushRequest? {
@@ -276,7 +425,7 @@ class BikePlaceViewModel @Inject constructor(
             userId = uid,
             fullName = fullName.value,
             imageUrl = imageUrl.value,
-            location = location.value,
+            dropOffLocation = bikeDropOffAddress.value,
             phoneNumber = phoneNumber.value
         )
         uid?.let { uId ->
@@ -309,7 +458,7 @@ class BikePlaceViewModel @Inject constructor(
            fullName: String? = null,
            phoneNumber: String? = null,
            imageUrl: String? = null,
-           location: String? =null,
+           bikeDropOffAddress: String? =null,
            orderedBikes: List<Bike>? = null
        ) {
            viewModelScope.launch(Dispatchers.IO) {
@@ -319,7 +468,7 @@ class BikePlaceViewModel @Inject constructor(
                    fullName = fullName ?: user.value?.fullName,
                    phoneNumber = phoneNumber ?: user.value?.phoneNumber,
                    imageUrl = imageUrl ?: user.value?.imageUrl,
-                   location = location ?: user.value?.location,
+                   bikeDropOffAddress = bikeDropOffAddress ?: user.value?.bikeDropOffAddress,
                    orderedBikes = orderedBikes ?: user.value?.orderedBikes
                )
 
@@ -363,6 +512,7 @@ class BikePlaceViewModel @Inject constructor(
                 .addOnSuccessListener {
                     val user1 = it.toObject<User>()
                     user.value = user1
+                    _userDetails.value = user1
                     inProgress.value = false
                     popUpNotification.value = Event("User Data Retrieved Successfully")
 
@@ -380,11 +530,15 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun getSelectedBike(bikeId: String) {
+
         viewModelScope.launch(Dispatchers.IO) {
+
             repository.getBikeByIdAsFlow(bikeId)
                 .onStart {
                     Log.d("getSelectedBikeVM", "Started Collecting Selected Bike As Flow")
                     Log.d("getSelectedBikeVM", _selectedBike.value.toString())
+
+
                 }
                 .catch { ex ->
                     Log.w("getSelectedBikeVM", "Exception Caught: ${ex.message}")
@@ -400,6 +554,10 @@ class BikePlaceViewModel @Inject constructor(
                     bike.value = it
                     Log.d("getSelectedBikeVM", "Flow Completed Successfully")
                     Log.d("getSelectedBikeVM", _selectedBike.value.toString())
+
+                   // Log.d("makeMpesaPaymentVM", applybookingsReqBody().toString())
+                    Log.d("LLLLLLLLLLLLLL", applybookingsReqBody().toString())
+
                 }
 
         }
@@ -489,6 +647,22 @@ class BikePlaceViewModel @Inject constructor(
 
     }
 
+    fun calculateTotalCheckoutPrice(): Double? {
+        return _selectedBike.value?.price?.let {
+            calculatePricingGivenDates(
+                leaseActivationDateTime = formatDateTimeForServer(
+                    leaseActivationDateInput.value,
+                    leaseActivationTimeInput.value
+                ),
+                leaseExpiryDateTime = formatDateTimeForServer(
+                    leaseExpiryDateInput.value,
+                    leaseExpiryTimeInput.value
+                ),
+                pricingPerHour = it
+            )
+        }
+    }
+    /*
     fun calculateTotalCheckoutPrice(): Double {
         val result = mutableStateOf(0.0)
         try {
@@ -498,6 +672,10 @@ class BikePlaceViewModel @Inject constructor(
         }
         return result.value
     }
+
+     */
+
+
 
     fun getAllBikes() {
         _allBikes.value = RequestState.Loading
@@ -642,6 +820,7 @@ class BikePlaceViewModel @Inject constructor(
                 }
         }
     }
+
 
 
 /*
@@ -827,9 +1006,17 @@ class BikePlaceViewModel @Inject constructor(
      */
 
 
-
-
     fun makeMpesaPayment() {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            applybookingsReqBody()?.let {
+                repository.makeBookingWithBPAPI(bookingsReq = it)
+                Log.d("makeMpesaPaymentVM",it.toString())
+            }
+
+        }
+
+        /*
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 applySTKPushBody()?.let { mpesaService.sendPush(it) }
@@ -844,6 +1031,32 @@ class BikePlaceViewModel @Inject constructor(
             }
         } catch (ex: Exception) {
             Log.w("main", "Error while making payment")
+        }
+
+         */
+    }
+
+
+    suspend fun getAllBookingInfoOfUser() {
+        _bookingsInfo.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+
+            user.value?.userId?.let { userId ->
+                BookingsInfoReq(
+                    userId = userId,
+                    mpesaReceiptNumber = ""
+                )
+            }?.let { bookingInfoReq: BookingsInfoReq ->
+                Log.d("getAllBokinInfoOfUserVM", bookingInfoReq.toString())
+
+                val result = repository.getAllBikeInfoByUserIdAsFlow(bookingInfoReq)
+
+                Log.d("getAllBokinInfoOfUserVM", result.toString())
+
+
+                _bookingsInfo.value = RequestState.Success(result)
+
+            }
         }
     }
 

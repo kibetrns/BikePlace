@@ -1,8 +1,8 @@
 package me.ipsum_amet.bikeplace.view.search
 
 import androidx.compose.runtime.Composable
-import me.ipsum_amet.bikeplace.Util.RequestState
-import me.ipsum_amet.bikeplace.Util.SearchAppBarState
+import me.ipsum_amet.bikeplace.util.RequestState
+import me.ipsum_amet.bikeplace.util.SearchAppBarState
 import me.ipsum_amet.bikeplace.components.Message
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.data.model.Bike

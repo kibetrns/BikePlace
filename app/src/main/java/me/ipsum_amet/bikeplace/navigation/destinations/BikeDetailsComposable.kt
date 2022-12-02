@@ -1,6 +1,8 @@
 package me.ipsum_amet.bikeplace.navigation.destinations
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,12 +10,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.BIKE_ARGUMENT_KEY
-import me.ipsum_amet.bikeplace.Util.BIKE_DETAILS_SCREEN
+import me.ipsum_amet.bikeplace.util.Action
+import me.ipsum_amet.bikeplace.util.BIKE_ARGUMENT_KEY
+import me.ipsum_amet.bikeplace.util.BIKE_DETAILS_SCREEN
 import me.ipsum_amet.bikeplace.view.bikeDetails.BikeDetailsScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
+@RequiresApi(Build.VERSION_CODES.N)
 fun NavGraphBuilder.bikeDetailsComposable(
     navigateToListScreen:(Action) -> Unit,
     bikePlaceViewModel: BikePlaceViewModel
@@ -41,7 +44,8 @@ fun NavGraphBuilder.bikeDetailsComposable(
         BikeDetailsScreen(
             bikePlaceViewModel = bikePlaceViewModel,
             selectedBike = selectedBike,
-            navigateToPreviousScreen = navigateToListScreen
+            navigateToPreviousScreen = navigateToListScreen,
+            navigateToSummaryScreen = {}
         )
     }
 }

@@ -11,8 +11,8 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import me.ipsum_amet.bikeplace.Util.BIKES
-import me.ipsum_amet.bikeplace.Util.USERS
+import me.ipsum_amet.bikeplace.util.BIKES
+import me.ipsum_amet.bikeplace.util.USERS
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.data.model.TYPE
 import javax.inject.Inject

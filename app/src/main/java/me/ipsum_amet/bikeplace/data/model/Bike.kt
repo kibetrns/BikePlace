@@ -1,7 +1,6 @@
 package me.ipsum_amet.bikeplace.data.model
 
 import com.google.firebase.Timestamp
-import com.google.type.Date
 import java.io.Serializable
 
 data class Bike(
@@ -15,7 +14,8 @@ data class Bike(
     @Transient var postedAt: Timestamp? = null,
     @Transient var modifiedAt: Timestamp? = null,
     var condition: CONDITION? = null,
-    var type: TYPE? = null
+    var type: TYPE? = null,
+    var leaseStatus: ReturnStatus? = null
 ) : Serializable {
     fun toMap() = mapOf(
         "bikeId" to bikeId,
@@ -26,7 +26,8 @@ data class Bike(
         "description" to description,
         "isBooked" to isBooked,
         "condition" to condition,
-        "type" to type
+        "type" to type,
+        "leaseStatus" to leaseStatus
     )
 }
 

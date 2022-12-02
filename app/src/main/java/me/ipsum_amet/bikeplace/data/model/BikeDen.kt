@@ -9,7 +9,7 @@ data class BikeDen(
     fun toMap() = mapOf(
         "bikeDenId" to bikeDenId,
         "name" to name,
-        "location" to location,
+        "bikeDropOffAddress" to location,
         "allBikes" to allBikes
     )
 

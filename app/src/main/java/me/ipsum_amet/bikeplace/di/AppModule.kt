@@ -8,7 +8,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +19,17 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
+import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import me.ipsum_amet.bikeplace.BuildConfig
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
+import me.ipsum_amet.bikeplace.data.service.BookingInfoService
+import me.ipsum_amet.bikeplace.data.service.BookingInfoServiceImpl
 import me.ipsum_amet.bikeplace.data.service.MpesaService
 import me.ipsum_amet.bikeplace.data.service.MpesaServiceImp
-import javax.inject.Singleton
+import javax.inject.Named
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -43,14 +45,25 @@ object AppModule {
 
   @Provides
   fun provideDBRemoteFayaBase(
-    auth: FirebaseAuth, db: FirebaseFirestore, storage: FirebaseStorage
+    auth: FirebaseAuth,
+    db: FirebaseFirestore,
+    storage: FirebaseStorage
   ) = FayaBase(auth = auth, db = db, storage = storage)
 
   @Provides
-  fun provideBikePlaceRepo(fayaBase: FayaBase) = BikePlaceRepository(fayaBase = fayaBase)
+  fun provideBikePlaceRepo(
+    fayaBase: FayaBase,
+    mpesaService: MpesaService,
+    bookingInfoService: BookingInfoService
+  ) = BikePlaceRepository(
+    fayaBase = fayaBase,
+    mpesaService = mpesaService,
+    bookingInfoService = bookingInfoService
+  )
 
   @Provides
-  fun provideHttpClient(): HttpClient = HttpClient(CIO) {
+  @Named("mpesa")
+  fun provideMpesaAuthHttpClient(): HttpClient = HttpClient(CIO) {
     engine {
       maxConnectionsCount = 1000
       endpoint {
@@ -67,11 +80,11 @@ object AppModule {
       logger = Logger.ANDROID
     }
     install(ContentNegotiation) {
-     json(Json{
-       prettyPrint = true
-       isLenient = true
-       ignoreUnknownKeys = true
-     })
+      json(Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+      })
     }
     install(Auth) {
       basic {
@@ -89,6 +102,44 @@ object AppModule {
   }
 
   @Provides
-  fun provideMpesaService(client: HttpClient): MpesaService = MpesaServiceImp(service = client)
+  @Named("default")
+  fun provideDefaultHttpClient(): HttpClient = HttpClient(CIO) {
+
+    install(Logging) {
+      level = LogLevel.ALL
+      logger = Logger.ANDROID
+    }
+
+    install(ContentNegotiation) {
+      json(Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+      })
+    }
+
+    defaultRequest {
+      headers {
+        append(HttpHeaders.ContentType, "application/json")
+      }
+    }
+
+  }
+
+  @Provides
+  fun provideMpesaService(
+    @Named("mpesa") mpesaAuthService: HttpClient,
+    @Named("default") defaultBPService: HttpClient,
+  ): MpesaService = MpesaServiceImp(mpesaAuthService = mpesaAuthService,  defaultBPService = defaultBPService )
+
+  @Provides
+  fun provideBookingInfoService(
+    @Named("default") defaultBPService: HttpClient
+  ): BookingInfoService = BookingInfoServiceImpl(defaultBPService = defaultBPService)
+
 
 }
+
+
+
+

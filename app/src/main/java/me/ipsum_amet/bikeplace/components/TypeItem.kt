@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import me.ipsum_amet.bikeplace.Util.L_PADDING
+import me.ipsum_amet.bikeplace.util.L_PADDING
 import me.ipsum_amet.bikeplace.data.model.CONDITION
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 

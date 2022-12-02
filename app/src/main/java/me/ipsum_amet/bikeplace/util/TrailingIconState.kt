@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.Util
+package me.ipsum_amet.bikeplace.util
 
 enum class TrailingIconState {
     READY_TO_DELETE,
