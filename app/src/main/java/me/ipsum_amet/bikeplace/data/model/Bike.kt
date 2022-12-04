@@ -15,7 +15,12 @@ data class Bike(
     @Transient var postedAt: Timestamp? = null,
     @Transient var modifiedAt: Timestamp? = null,
     var condition: CONDITION? = null,
-    var type: TYPE? = null
+    var type: TYPE? = null,
+    var gears: Gears? = null,
+    var groupSetMaterial: GroupSetMaterial? = null,
+    var handleBars: HandleBars? = null,
+    var suspension: Suspension? = null
+
 ) : Serializable {
 
     fun toMap() = mapOf(
@@ -27,9 +32,11 @@ data class Bike(
         "description" to description,
         "isBooked" to isBooked,
         "condition" to condition,
-        "type" to type
+        "type" to type,
+        "gears" to gears,
+        "groupSetMaterial" to groupSetMaterial,
+        "handleBars" to handleBars,
+        "suspension" to suspension
     )
-
-
 }
 

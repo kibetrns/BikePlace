@@ -19,12 +19,15 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.ConditionDropDown
+import me.ipsum_amet.bikeplace.components.GearItemDropDown
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.components.TypeDropDown
-import me.ipsum_amet.bikeplace.data.model.CONDITION
-import me.ipsum_amet.bikeplace.data.model.TYPE
+import me.ipsum_amet.bikeplace.components.dropDowns.GroupSetMaterialDropDown
+import me.ipsum_amet.bikeplace.components.dropDowns.HandleBarDropDown
+import me.ipsum_amet.bikeplace.components.dropDowns.SuspensionDropDown
+import me.ipsum_amet.bikeplace.data.model.*
 
 
 @Composable
@@ -41,6 +44,14 @@ fun BikeContent(
     onPriceChange: (String) -> Unit,
     imageUrl: String?,
     onImageClicked: () -> Unit,
+    gears: Gears,
+    onGearsSelected:(Gears) -> Unit,
+    groupSetMaterial: GroupSetMaterial,
+    onGroupSetMaterialSelected:(GroupSetMaterial) -> Unit,
+    handleBars: HandleBars,
+    onHandleBarsSelected: (HandleBars) -> Unit,
+    suspension: Suspension,
+    onSuspensionSelected: (Suspension) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -80,6 +91,14 @@ fun BikeContent(
             modifier = Modifier
                 .fillMaxWidth()
         )
+        
+        GearItemDropDown(gears = gears, onConditionSelected = { onGearsSelected(it) })
+
+        HandleBarDropDown(handleBars = handleBars, onHandleBarsSelected = { onHandleBarsSelected(it) })
+
+        GroupSetMaterialDropDown(groupSetMaterial = groupSetMaterial, onGroupSetMaterialSelected = { onGroupSetMaterialSelected(it) } )
+
+        SuspensionDropDown(suspension = suspension, onHandleBarsSelected = { onSuspensionSelected(it) })
 
         OutlinedTextField(
             value = description,
@@ -203,8 +222,19 @@ fun PBikeContent() {
             onConditionSelected = {},
             price = "70.00",
             onPriceChange = {},
-            imageUrl = ""
-        ) {}
+            imageUrl = "",
+            onImageClicked = {
+
+            },
+           gears = Gears.ABOVE_TWENTY,
+           onGearsSelected = {},
+           groupSetMaterial = GroupSetMaterial.TITANIUM,
+           onGroupSetMaterialSelected = {},
+           handleBars = HandleBars.NARROW,
+           onHandleBarsSelected = {},
+           suspension = Suspension.HARD_TAIL,
+           onSuspensionSelected = {}
+        )
 
     }
 }

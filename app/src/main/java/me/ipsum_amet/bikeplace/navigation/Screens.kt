@@ -1,12 +1,7 @@
 package me.ipsum_amet.bikeplace.navigation
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.navDeepLink
-import me.ipsum_amet.bikeplace.Util.*
-import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
+import me.ipsum_amet.bikeplace.util.*
 
 class Screens(navController: NavController) {
 

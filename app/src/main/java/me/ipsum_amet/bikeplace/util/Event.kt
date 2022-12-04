@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.Util
+package me.ipsum_amet.bikeplace.util
 
 open class Event<out T>(private val content: T) {
 

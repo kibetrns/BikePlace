@@ -2,7 +2,7 @@ package me.ipsum_amet.bikeplace.view.bikeDetails
 
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
-import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 

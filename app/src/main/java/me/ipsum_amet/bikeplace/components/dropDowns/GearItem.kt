@@ -1,31 +1,31 @@
 package me.ipsum_amet.bikeplace.components
 
-import me.ipsum_amet.bikeplace.data.model.TYPE
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import me.ipsum_amet.bikeplace.Util.L_PADDING
 import me.ipsum_amet.bikeplace.data.model.CONDITION
+import me.ipsum_amet.bikeplace.data.model.Gears
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
+import me.ipsum_amet.bikeplace.util.L_PADDING
 
 @Composable
-fun TypeItem(type: TYPE) {
+fun GearItem(gears: Gears) {
     Text(
         modifier = Modifier
             .padding(start = L_PADDING),
-        text = type.name,
+        text = gears.name,
         style = MaterialTheme.typography.subtitle1,
         color = MaterialTheme.colors.onSurface
     )
 }
 
-@Preview(name = "ConditionItem", showBackground = true)
+@Preview(name = "GearItem", showBackground = true)
 @Composable
-fun PTypeItem() {
+fun PTGearItem() {
     BikePlaceTheme() {
-        ConditionItem(condition = CONDITION.EXCELLENT)
+        GearItem(gears = Gears.ABOVE_TWENTY)
     }
 }

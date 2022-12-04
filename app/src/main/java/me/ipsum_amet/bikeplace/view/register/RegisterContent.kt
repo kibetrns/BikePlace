@@ -30,9 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.L_PADDING
-import me.ipsum_amet.bikeplace.Util.SIGN_IN_IMAGE_HEIGHT
-import me.ipsum_amet.bikeplace.Util.XL_PADDING
+import me.ipsum_amet.bikeplace.util.L_PADDING
+import me.ipsum_amet.bikeplace.util.SIGN_IN_IMAGE_HEIGHT
+import me.ipsum_amet.bikeplace.util.XL_PADDING
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 import me.ipsum_amet.bikeplace.view.bikeEntry.displayToast
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel

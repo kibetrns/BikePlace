@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.Action
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.components.BottomNavBar
 
 @Composable

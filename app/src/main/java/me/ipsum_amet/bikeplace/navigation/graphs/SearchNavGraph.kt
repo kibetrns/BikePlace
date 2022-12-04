@@ -6,8 +6,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.*
 import androidx.navigation.compose.composable
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.toAction
+import me.ipsum_amet.bikeplace.util.Action
+import me.ipsum_amet.bikeplace.util.toAction
 import me.ipsum_amet.bikeplace.view.bikeEntry.BikeScreen
 import me.ipsum_amet.bikeplace.view.list.ListScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel

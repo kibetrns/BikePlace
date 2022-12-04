@@ -1,6 +1,5 @@
-package me.ipsum_amet.bikeplace.components
+package me.ipsum_amet.bikeplace.components.dropDowns
 
-import me.ipsum_amet.bikeplace.data.model.CONDITION
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,17 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.ipsum_amet.bikeplace.Util.PRIORITY_DROPDOWN_HEIGHT
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.S_PADDING
-import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
+import me.ipsum_amet.bikeplace.data.model.GroupSetMaterial
+import me.ipsum_amet.bikeplace.data.model.HandleBars
+import me.ipsum_amet.bikeplace.util.PRIORITY_DROPDOWN_HEIGHT
+import me.ipsum_amet.bikeplace.util.S_PADDING
+
 
 @Composable
-fun ConditionDropDown(
-    condition: CONDITION,
-    onConditionSelected:(CONDITION) -> Unit
+fun HandleBarDropDown(
+    handleBars: HandleBars,
+    onHandleBarsSelected:(HandleBars) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val angle: Float by animateFloatAsState(
@@ -50,7 +50,7 @@ fun ConditionDropDown(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = condition.name,
+            text = handleBars.name,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
                 .weight(8f)
@@ -59,7 +59,7 @@ fun ConditionDropDown(
             onClick = { expanded = true },
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
-                .rotate( degrees = angle)
+                .rotate(degrees = angle)
                 .weight(1.5f)
         ) {
             Icon(
@@ -73,46 +73,17 @@ fun ConditionDropDown(
             ) {
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onConditionSelected(CONDITION.EXCELLENT)
+                    onHandleBarsSelected(HandleBars.NARROW)
                 }) {
-                    ConditionItem(condition = CONDITION.EXCELLENT)
+                    HandleBarItem(handleBars = HandleBars.NARROW)
                 }
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onConditionSelected(CONDITION.GOOD)
+                    onHandleBarsSelected(HandleBars.CURVED)
                 }) {
-                    ConditionItem(condition = CONDITION.GOOD)
+                    HandleBarItem(handleBars = HandleBars.CURVED)
                 }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onConditionSelected(CONDITION.AVERAGE)
-                }) {
-                    ConditionItem(condition = CONDITION.AVERAGE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onConditionSelected(CONDITION.BAD)
-                }) {
-                    ConditionItem(condition = CONDITION.BAD)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onConditionSelected(CONDITION.POOR)
-                }) {
-                    ConditionItem(condition = CONDITION.POOR)
-                }
-
-
             }
         }
     }
-}
-
-@Preview("ConditionDropDown")
-@Composable
-fun PConditionDropDown() {
-    BikePlaceTheme() {
-        ConditionDropDown(condition = CONDITION.EXCELLENT) {}
-    }
-
 }

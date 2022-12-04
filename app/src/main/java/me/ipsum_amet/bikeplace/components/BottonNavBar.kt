@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -20,7 +21,7 @@ fun BottomNavBar(navController: NavHostController) {
         BottomNavBarScreen.Statistics
     )
     BottomNavigation {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val navBackStackEntry by  navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
         val bottomDestination = items.any { it.route == currentDestination?.route }
@@ -39,9 +40,9 @@ fun BottomNavBar(navController: NavHostController) {
 }
 @Composable
 fun RowScope.AddItem(
-        screen: BottomNavBarScreen,
-        currentDestination: NavDestination?,
-        navController: NavHostController ) {
+    screen: BottomNavBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavHostController ) {
     BottomNavigationItem(
         label = {
             Text(text = screen.title)
@@ -57,7 +58,6 @@ fun RowScope.AddItem(
         } == true,
         onClick = {
             navController.navigate(screen.route) {
-                popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
         },

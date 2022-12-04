@@ -9,8 +9,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import me.ipsum_amet.bikeplace.Util.Action
 import me.ipsum_amet.bikeplace.components.BottomNavBar
+import me.ipsum_amet.bikeplace.util.Action
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
@@ -26,6 +26,11 @@ fun BikeScreen(
     val bikeCondition by remember { bikePlaceViewModel.bikeCondition }
     val bikeDescription by remember { bikePlaceViewModel.bikeDescription }
     val bikePrice by remember { bikePlaceViewModel.bikePrice }
+
+    val bikeGear by remember { bikePlaceViewModel.bikeGear }
+    val bikeGroupSetMaterial by remember { bikePlaceViewModel.bikeGroupSetMaterial }
+    val bikeHandleBars by remember { bikePlaceViewModel.bikeHandleBars }
+    val bikeSuspension by remember { bikePlaceViewModel.bikeSuspension }
 
     var imageData by  remember{ bikePlaceViewModel.imageData }
     val imageLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -70,6 +75,22 @@ fun BikeScreen(
                 imageUrl = imageData.toString(),
                 onImageClicked = {
                     imageLauncher.launch("image/*")
+                },
+                gears = bikeGear,
+                onGearsSelected = {
+                    bikePlaceViewModel.bikeGear.value = it
+                },
+                groupSetMaterial = bikeGroupSetMaterial,
+                onGroupSetMaterialSelected = {
+                    bikePlaceViewModel.bikeGroupSetMaterial.value = it
+                },
+                handleBars = bikeHandleBars,
+                onHandleBarsSelected = {
+                    bikePlaceViewModel.bikeHandleBars.value = it
+                },
+                suspension = bikeSuspension,
+                onSuspensionSelected = {
+                    bikePlaceViewModel.bikeSuspension.value = it
                 }
             )
         }

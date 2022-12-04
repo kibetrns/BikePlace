@@ -7,25 +7,30 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import me.ipsum_amet.bikeplace.components.BottomNavBar
 import me.ipsum_amet.bikeplace.components.Message
+import me.ipsum_amet.bikeplace.view.home.HomeAdminScreen
 import me.ipsum_amet.bikeplace.view.home.HomeAppBar
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
-fun NavGraphBuilder.homeAdminNavGraph(navController: NavHostController, bikePlaceViewModel: BikePlaceViewModel) {
+fun NavGraphBuilder.homeAdminNavGraph(
+    navController: NavHostController,
+    bikePlaceViewModel: BikePlaceViewModel
+) {
     navigation(
         route = Graph.HOME,
         startDestination = HomeAdminScreen.Home.route
     ) {
         composable(route = HomeAdminScreen.Home.route) {
-            Scaffold(
-                bottomBar = { BottomNavBar(navController = navController) },
-                topBar = { HomeAppBar() }
-            ) {
-                Message(message = "Admin Home Screen")
-            }
+            HomeAdminScreen(
+                bikePlaceViewModel = bikePlaceViewModel,
+                navController = navController,
+            )
         }
     }
 }
 
 sealed class HomeAdminScreen(val route: String) {
     object Home: HomeAdminScreen(route = "home")
+
+    object Dummy: HomeAdminScreen(route = "dummy")
+
 }

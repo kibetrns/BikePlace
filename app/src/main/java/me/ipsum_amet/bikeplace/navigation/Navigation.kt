@@ -3,9 +3,6 @@ package me.ipsum_amet.bikeplace.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import me.ipsum_amet.bikeplace.Util.REGISTER_SCREEN
-import me.ipsum_amet.bikeplace.navigation.destinations.*
 import me.ipsum_amet.bikeplace.navigation.graphs.RootNavigationGraph
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 

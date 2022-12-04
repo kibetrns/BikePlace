@@ -8,10 +8,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.BIKE_ARGUMENT_KEY
-import me.ipsum_amet.bikeplace.Util.BIKE_DETAILS_SCREEN
-import me.ipsum_amet.bikeplace.Util.BIKE_SCREEN
+import me.ipsum_amet.bikeplace.util.Action
+import me.ipsum_amet.bikeplace.util.BIKE_ARGUMENT_KEY
+import me.ipsum_amet.bikeplace.util.BIKE_DETAILS_SCREEN
 import me.ipsum_amet.bikeplace.view.bikeDetails.BikeDetailsScreen
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 

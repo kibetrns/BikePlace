@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.*
 import me.ipsum_amet.bikeplace.data.model.Bike
 import me.ipsum_amet.bikeplace.data.model.CONDITION
@@ -145,7 +145,7 @@ fun DisplayTopChoicesHomeContent(
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(L_PADDING)
     ) {
-        items(
+        items(  
             items = bikes,
             key = { bike: Bike ->
                 bike::bikeId

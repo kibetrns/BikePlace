@@ -16,12 +16,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import me.ipsum_amet.bikeplace.Util.*
-import me.ipsum_amet.bikeplace.data.model.Bike
-import me.ipsum_amet.bikeplace.data.model.CONDITION
-import me.ipsum_amet.bikeplace.data.model.TYPE
+import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
+import me.ipsum_amet.bikeplace.data.dto.response.toBookingInfo
+import me.ipsum_amet.bikeplace.data.model.*
+import me.ipsum_amet.bikeplace.util.*
 import javax.inject.Inject
-import me.ipsum_amet.bikeplace.data.model.User
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
 import java.util.*
 
@@ -62,13 +61,20 @@ class BikePlaceViewModel @Inject constructor(
     var bikeImageUrl = mutableStateOf("")
     var bikePrice = mutableStateOf("0.00")
     var isBooked = mutableStateOf(false)
+    var bikeGear = mutableStateOf(Gears.ABOVE_TWENTY)
+    var bikeGroupSetMaterial = mutableStateOf(GroupSetMaterial.TITANIUM)
+    var bikeHandleBars = mutableStateOf(HandleBars.NARROW)
+    var bikeSuspension = mutableStateOf(Suspension.HARD_TAIL)
 
     var imageData = mutableStateOf<Uri?>(null)
+
+
 
 
     val searchAppBarState: MutableState<SearchAppBarState> =
         mutableStateOf(SearchAppBarState.CLOSED)
     val searchTextState: MutableState<String> = mutableStateOf("")
+
 
     val getCategoryState: MutableState<GetCategoryState> =
         mutableStateOf(GetCategoryState.TRIGGEREDNOT)
@@ -97,6 +103,26 @@ class BikePlaceViewModel @Inject constructor(
     val alreadyLoggedIn = mutableStateOf(false)
 
     var hoursToLease = mutableStateOf("3")
+
+
+    private val _allBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    val allBookingsInfoRes: StateFlow<RequestState<List<BookingsInfoRes>>> = _allBookingsInfo
+
+    private val _leasedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    val leasedBookingsInfo: StateFlow<RequestState<List<BookingsInfoRes>>> = _leasedBookingsInfo
+
+    private val _returnedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    val returnedBookingsInfo: StateFlow<RequestState<List<BookingsInfoRes>>> = _returnedBookingsInfo
+
+
+    val searchReceiptNumber: MutableState<String> = mutableStateOf("")
+
+    private val _searchedBookingInfo: MutableStateFlow<RequestState<BookingsInfoRes?>> = MutableStateFlow(RequestState.Idle)
+    val searchedBookingInfo: StateFlow<RequestState<BookingsInfoRes?>> = _searchedBookingInfo
+
+    val homeAdminSearchAppBarState: MutableState<SearchAppBarState> =
+        mutableStateOf(SearchAppBarState.CLOSED)
+
 
 
     init {
@@ -614,6 +640,95 @@ class BikePlaceViewModel @Inject constructor(
 
     }
     */
+
+    fun getAllBookingsInfo() {
+        _allBookingsInfo.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.getAllBookingsInfoAsFlow()
+                .catch { ex ->
+                    Log.d("getAllBksInfoVM", "Exception Caught: ${ex.message}")
+                    _allBookingsInfo.value = RequestState.Error(ex)
+                }
+                .collect {
+                    _allBookingsInfo.value = RequestState.Success(it)
+                }
+            /*
+            val result = repository.getAllBookingsInfoAsFlow().map { it.toBookingInfo() }
+
+            Log.d("getAllBookingsInfoVM", result.toString())
+
+            _allBookingsInfo.value = RequestState.Success(result)
+
+             */
+        }
+    }
+
+    fun  getAllLeasedBookings() {
+        _leasedBookingsInfo.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBookingsInfoAsFlow()
+                .onStart {
+                    Log.d("getAllLeasBksInfoVM", "started .....")
+                }
+                .catch {
+                    Log.e("getAllLeasBksInfoVM", it.toString())
+                    _leasedBookingsInfo.value = RequestState.Error(it)
+                }
+                .map { bookingsInfo: List<BookingsInfoRes> ->
+                    bookingsInfo.filter {
+                        it.bikeReturnStatus == ReturnStatus.LEASED
+                    }
+                }
+                .collect {
+                    Log.d("getAllLeasBksInfoVM", it.toString())
+                    _leasedBookingsInfo.value = RequestState.Success(it)
+                }
+        }
+    }
+
+
+    fun getAllReturnedBookings() {
+        _returnedBookingsInfo.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBookingsInfoAsFlow()
+                .catch {
+                    Log.e("getAllRetBksInfoVM", it.toString())
+                    _returnedBookingsInfo.value = RequestState.Error(it)
+                }
+                .map { bookingsInfo: List<BookingsInfoRes> ->
+                    bookingsInfo.filter {
+                        it.bikeReturnStatus == ReturnStatus.RETURNED
+                    }
+                }
+                .collect {
+                    Log.d("getAllRetBksInfoVM", it.toString())
+                    _returnedBookingsInfo.value = RequestState.Success(it)
+                }
+        }
+    }
+
+    fun getBookingInfoByMpesaReceiptNumber(mpesaReceiptNumber: String) {
+
+        _searchedBookingInfo.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = repository.getBookingsInfoByReceiptId(mpesaReceiptNumber)
+
+                Log.d("getBkInByMpeRecNoVM", result.toString())
+                Log.d("getBkInByMpeRcNo_MPN_VM", mpesaReceiptNumber)
+
+                if (result != null) {
+                    _searchedBookingInfo.value = RequestState.Success(result)
+                } else {
+                    _searchedBikes.value = RequestState.Error(Throwable(message = "Unable to Fetch Bookings Info with provided receipt id"))
+                }
+            } catch (ex: Exception) {
+                ex.localizedMessage?.let { Log.e("getBkInByMpeRecNo", it) }
+                _searchedBookingInfo.value = RequestState.Error(ex)
+            }
+        }
+    }
 
     fun updateOrAddBike(
         bikeId: String? = null,

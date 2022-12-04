@@ -22,7 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.*
+import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.DisplayAlertDialog
 import me.ipsum_amet.bikeplace.components.ConditionItem
 import me.ipsum_amet.bikeplace.data.model.CONDITION

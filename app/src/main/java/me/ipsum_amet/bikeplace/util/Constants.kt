@@ -1,4 +1,4 @@
-package me.ipsum_amet.bikeplace.Util
+package me.ipsum_amet.bikeplace.util
 
 const val REALM_SCHEMA_VERSION = 0L
 const val REALM_DB_NAME = "BikePlace.db"
@@ -26,6 +26,15 @@ const val HOME_SCREEN_ARGUMENT_KEY_2 = "bikeId"
 
 const val USERS = "users"
 const val BIKES = "bikes"
+
+const val BP_API_BASE_URL = "https://4f72-105-57-203-94.eu.ngrok.io"
+
+sealed class BPAPIEndpoints(val url: String) {
+    object AllBookingsInfo: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/all-bookings-info")
+
+    object BookingInfoByReceiptId: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/bookings-info-by-receipt-id")
+
+}
 
 
 

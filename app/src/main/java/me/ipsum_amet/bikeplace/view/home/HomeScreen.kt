@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import me.ipsum_amet.bikeplace.Util.Action
-import me.ipsum_amet.bikeplace.Util.GetCategoryState
+import me.ipsum_amet.bikeplace.util.Action
+import me.ipsum_amet.bikeplace.util.GetCategoryState
 import me.ipsum_amet.bikeplace.data.model.User
 import me.ipsum_amet.bikeplace.view.list.DisplaySnackBar
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel

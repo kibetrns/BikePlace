@@ -12,7 +12,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 import me.ipsum_amet.bikeplace.data.repo.BikePlaceRepository
+import me.ipsum_amet.bikeplace.data.service.BookingsInfoService
+import me.ipsum_amet.bikeplace.data.service.BookingsInfoServiceImpl
+import javax.inject.Named
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -32,5 +44,41 @@ object AppModule {
   ) = FayaBase(auth = auth, db = db, storage = storage)
 
   @Provides
-  fun provideBikePlaceRepo(fayaBase: FayaBase) = BikePlaceRepository(fayaBase = fayaBase)
+  fun provideBikePlaceRepo(
+    fayaBase: FayaBase,
+    bookingsInfoService: BookingsInfoService
+  ) = BikePlaceRepository(
+    fayaBase = fayaBase,
+    bookingsInfoService = bookingsInfoService
+  )
+
+
+  @Provides
+  @Named("default")
+  fun provideDefaultHttpClient(): HttpClient = HttpClient(CIO) {
+
+    install(Logging) {
+      level = LogLevel.ALL
+      logger = Logger.ANDROID
+    }
+
+    install(ContentNegotiation) {
+      json(Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+      })
+    }
+
+    defaultRequest {
+      headers {
+        append(HttpHeaders.ContentType, "application/json")
+      }
+    }
+  }
+
+  @Provides
+  fun provideBookingInfoService(
+    @Named("default") defaultBPService: HttpClient
+  ): BookingsInfoService = BookingsInfoServiceImpl(defaultBPService = defaultBPService)
 }

@@ -20,16 +20,15 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.ipsum_amet.bikeplace.Util.PRIORITY_DROPDOWN_HEIGHT
+import me.ipsum_amet.bikeplace.util.PRIORITY_DROPDOWN_HEIGHT
 import me.ipsum_amet.bikeplace.R
-import me.ipsum_amet.bikeplace.Util.S_PADDING
-import me.ipsum_amet.bikeplace.data.model.TYPE
+import me.ipsum_amet.bikeplace.util.S_PADDING
 import me.ipsum_amet.bikeplace.ui.theme.BikePlaceTheme
 
 @Composable
-fun TypeDropDown(
-    type: TYPE,
-    onTypeSelected:(TYPE) -> Unit
+fun ConditionDropDown(
+    condition: CONDITION,
+    onConditionSelected:(CONDITION) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val angle: Float by animateFloatAsState(
@@ -51,7 +50,7 @@ fun TypeDropDown(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = type.name,
+            text = condition.name,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
                 .weight(8f)
@@ -60,7 +59,7 @@ fun TypeDropDown(
             onClick = { expanded = true },
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
-                .rotate(degrees = angle)
+                .rotate( degrees = angle)
                 .weight(1.5f)
         ) {
             Icon(
@@ -74,80 +73,46 @@ fun TypeDropDown(
             ) {
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onTypeSelected(TYPE.BMX)
+                    onConditionSelected(CONDITION.EXCELLENT)
                 }) {
-                    TypeItem(type = TYPE.BMX)
+                    ConditionItem(condition = CONDITION.EXCELLENT)
                 }
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onTypeSelected(TYPE.CRUISER)
+                    onConditionSelected(CONDITION.GOOD)
                 }) {
-                    TypeItem(type = TYPE.CRUISER)
+                    ConditionItem(condition = CONDITION.GOOD)
                 }
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onTypeSelected(TYPE.CYCLOCROSS_BIKE)
+                    onConditionSelected(CONDITION.AVERAGE)
                 }) {
-                    TypeItem(type = TYPE.CYCLOCROSS_BIKE)
+                    ConditionItem(condition = CONDITION.AVERAGE)
                 }
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onTypeSelected(TYPE.ELECTRIC_BIKE)
+                    onConditionSelected(CONDITION.BAD)
                 }) {
-                    TypeItem(type = TYPE.ELECTRIC_BIKE)
+                    ConditionItem(condition = CONDITION.BAD)
                 }
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    onTypeSelected(TYPE.FOLDING_BIKE)
+                    onConditionSelected(CONDITION.POOR)
                 }) {
-                    TypeItem(type = TYPE.FOLDING_BIKE)
+                    ConditionItem(condition = CONDITION.POOR)
                 }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.HYBRID_BIKE)
-                }) {
-                    TypeItem(type = TYPE.HYBRID_BIKE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.MOUNTAIN_BIKE)
-                }) {
-                    TypeItem(type = TYPE.MOUNTAIN_BIKE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.RECUMBENT_BIKE)
-                }) {
-                    TypeItem(type = TYPE.RECUMBENT_BIKE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.ROAD_RIDE)
-                }) {
-                    TypeItem(type = TYPE.ROAD_RIDE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.TOURING_BIKE)
-                }) {
-                    TypeItem(type = TYPE.TOURING_BIKE)
-                }
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    onTypeSelected(TYPE.TRACK_BIKE)
-                }) {
-                    TypeItem(type = TYPE.TRACK_BIKE)
-                }
+
+
             }
         }
     }
 }
 
-@Preview("TypeDropDown")
+@Preview("ConditionDropDown")
 @Composable
-fun PTypeDropDown() {
+fun PConditionDropDown() {
     BikePlaceTheme() {
-        TypeDropDown(type = TYPE.MOUNTAIN_BIKE, onTypeSelected = {})
+        ConditionDropDown(condition = CONDITION.EXCELLENT) {}
     }
 
 }
