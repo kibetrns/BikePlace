@@ -117,6 +117,8 @@ dependencies {
     //Compose Charts
     implementation "io.github.bytebeats:compose-charts:0.1.2"
 
+    //Compose Charts
+    implementation "io.github.bytebeats:compose-charts:0.1.2"
 
     //Joda Time
     implementation("joda-time:joda-time:2.12.1")
