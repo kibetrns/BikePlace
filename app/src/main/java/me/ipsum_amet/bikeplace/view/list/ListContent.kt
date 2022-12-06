@@ -133,7 +133,13 @@ fun DisplayBikes(
 ) {
 
     LazyColumn(
-        contentPadding = PaddingValues(3.dp),
+        //contentPadding = PaddingValues(3.dp),
+        contentPadding = PaddingValues(
+            bottom = XXL_PADDING,
+            start = S_PADDING,
+            end = S_PADDING,
+            top = S_PADDING
+        ),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

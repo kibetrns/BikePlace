@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.google.accompanist.flowlayout.FlowRow
 import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.ProgressBox
@@ -94,9 +95,24 @@ fun BikeDetailsContent(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
+                    .padding(M_PADDING)
                 )
         }
-        BikeChipGroup(bike = bike, modifier = Modifier.wrapContentSize())
+
+        FlowRow(
+            mainAxisSpacing = M_PADDING,
+            crossAxisSpacing = M_PADDING,
+        ) {
+            BikeChip(bikeXteristic = "Lease for KES ${bike.price} / hr")
+            BikeChip(bikeXteristic= "Condition: ${bike.condition}")
+            BikeChip(bikeXteristic = "Type: ${bike.type?.name}")
+            BikeChip(bikeXteristic = "HandleBarShape: ${bike.handleBars?.name}")
+            BikeChip(bikeXteristic = "GroupSetMaterial: ${bike.groupSetMaterial?.name}")
+            BikeChip(bikeXteristic = "Suspension: ${bike.suspension?.name}")
+            BikeChip(bikeXteristic = "Gears: ${bike.gears?.name}")
+        }
+
+        //BikeChipGroup(bike = bike, modifier = Modifier.wrapContentSize())
         Column(
             verticalArrangement = Arrangement.SpaceAround
         ) {

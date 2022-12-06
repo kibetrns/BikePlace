@@ -57,7 +57,7 @@ fun HandleBookingContent(
     bookingsInfo: List<BookingInfo>,
     ) {
     if (bookingsInfo.isEmpty()) {
-        Message(message = "No records corresponding to userId")
+        Message(message = "No records corresponding to userId or Check net. connection")
     } else {
         DisplayBookingContent(bookingsInfo = bookingsInfo)
     }
@@ -79,7 +79,6 @@ fun DisplayBookingContent(bookingsInfo: List<BookingInfo>) {
             BookingItem(bookingsInfo = bookingsInfo)
         }
     }
-
     
 }
 

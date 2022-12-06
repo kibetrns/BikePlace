@@ -35,10 +35,12 @@ fun HomeContent(
 ) {
 
     LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .fillMaxSize()
+        contentPadding = PaddingValues(bottom = XXXL_PADDING, start = S_PADDING)
+
     ) {
         item {
             Text(
@@ -55,12 +57,14 @@ fun HomeContent(
             ) {
                 Text(
                     text = "Top Choices",
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 TextButton(onClick = { navigateToTopChoiceBikes() }) {
                     Text(
                         text = "show more",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(vertical = L_PADDING)
                     )
                 }
             }
@@ -91,7 +95,9 @@ fun HomeContent(
             ) {
                 Text(
                     text = "Categories",
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(L_PADDING)
                 )
             }
         }
