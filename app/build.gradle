@@ -128,4 +128,7 @@ dependencies {
     //kotlin reflect
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
 
+    //FlowLayout
+    implementation "com.google.accompanist:accompanist-flowlayout:0.23.1"
+
 }
