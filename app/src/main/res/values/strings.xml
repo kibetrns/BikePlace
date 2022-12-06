@@ -53,5 +53,9 @@
     <string name="image_placeholder">Image Placeholder</string>
     <string name="add_photo">Add Photo</string>
     <string name="bookingId_icon">BookingId Icon </string>
+    <string name="calendar_icon">Calendar Icon</string>
+    <string name="to_summary_content_view_button">View Chart</string>
+    <string name="to_trending_content_view_button">View Chart </string>
+    <string name="edit_return_status">Edit Return Status Of Booking Info</string>
 
 </resources>

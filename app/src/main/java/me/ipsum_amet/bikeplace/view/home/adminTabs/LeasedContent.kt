@@ -4,11 +4,14 @@ import androidx.compose.runtime.Composable
 import me.ipsum_amet.bikeplace.components.Message
 import me.ipsum_amet.bikeplace.components.ProgressBox
 import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
-import me.ipsum_amet.bikeplace.data.model.BookingInfo
 import me.ipsum_amet.bikeplace.util.RequestState
 
 @Composable
-fun LeasedContent(leasedBookingsInfo: RequestState<List<BookingsInfoRes>>) {
+fun LeasedContent(
+    leasedBookingsInfo: RequestState<List<BookingsInfoRes>>,
+   // returnStatus: ReturnStatus,
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit,
+) {
     when(leasedBookingsInfo) {
         RequestState.Loading -> {
             ProgressBox()

@@ -2,6 +2,7 @@ package me.ipsum_amet.bikeplace.data.repo
 
 import me.ipsum_amet.bikeplace.data.db.remote.FayaBase
 import dagger.hilt.android.scopes.ViewModelScoped
+import ipsum_amet.me.data.remote.dtos.requests.mpesa.EditReturnStatusBookingInfo
 import kotlinx.coroutines.flow.*
 import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
 import me.ipsum_amet.bikeplace.data.model.Bike
@@ -34,5 +35,10 @@ class BikePlaceRepository @Inject constructor(
 
     suspend fun getBookingsInfoByReceiptId(receiptId: String): BookingsInfoRes? {
         return bookingsInfoService.getBookingsInfoByReceiptId(receiptId = receiptId)
+    }
+
+
+    suspend fun updateReturnStatusOfBookingInfo(editReturnStatusBookingInfo: EditReturnStatusBookingInfo) {
+        return bookingsInfoService.updateReturnStatusOfBookingInfo(editReturnStatusBookingInfo = editReturnStatusBookingInfo)
     }
 }

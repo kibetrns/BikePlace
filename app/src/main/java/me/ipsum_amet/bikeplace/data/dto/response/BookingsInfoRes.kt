@@ -5,6 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import me.ipsum_amet.bikeplace.data.model.BookingInfo
 import me.ipsum_amet.bikeplace.data.model.ReturnStatus
+import me.ipsum_amet.bikeplace.data.model.TYPE
 
 @Serializable
 data class BookingsInfoRes(
@@ -24,6 +25,8 @@ data class BookingsInfoRes(
     val bikeReturnStatus: ReturnStatus,
     @SerialName("bookingId")
     val bookingId: String,
+    @SerialName("bikeType")
+    val bikeType: TYPE,
     @SerialName("dateBookingMade")
     val dateBookingMade: LocalDateTime,
     @SerialName("userId")

@@ -7,8 +7,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.RequestQuote
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +28,7 @@ import me.ipsum_amet.bikeplace.R
 import me.ipsum_amet.bikeplace.util.*
 import me.ipsum_amet.bikeplace.components.Message
 import me.ipsum_amet.bikeplace.components.ProgressBox
+import me.ipsum_amet.bikeplace.components.dropDowns.ReturnStatusDropDown
 import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
 import me.ipsum_amet.bikeplace.data.dto.response.toBookingInfo
 import me.ipsum_amet.bikeplace.data.model.BookingInfo
@@ -32,8 +36,10 @@ import me.ipsum_amet.bikeplace.data.model.BookingInfo
 @Composable
 fun AllContent(
     allBookingsInfo: RequestState<List<BookingsInfoRes>>,
+    //returnStatus: ReturnStatus,
     searchedBookingInfo: RequestState<BookingsInfoRes?>,
-    searchAppBarState: SearchAppBarState
+    searchAppBarState: SearchAppBarState,
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit
 
 ) {
 
@@ -48,7 +54,9 @@ fun AllContent(
             }
             else -> {
                 if (searchedBookingInfo is RequestState.Success) {
-                    searchedBookingInfo.data?.let { BookingItem(bookingsInfo = it.toBookingInfo()) }
+                    searchedBookingInfo.data?.let { BookingItem(
+                        bookingsInfo = it.toBookingInfo()
+                    ) }
                 } else if(searchedBookingInfo is RequestState.Error) {
                     Message(
                         message = "Error while searching... " +
@@ -80,7 +88,9 @@ fun AllContent(
             }
             else -> {
                 if (allBookingsInfo is RequestState.Success) {
-                    HandleBookingContent(bookingsInfo = allBookingsInfo.data)
+                    HandleBookingContent(
+                        bookingsInfo = allBookingsInfo.data
+                    )
                 } else if (allBookingsInfo is RequestState.Error) {
                     Message(message = "Error While Displaying All Bookings Info. Records")
                 }
@@ -94,19 +104,29 @@ fun AllContent(
 @Composable
 fun HandleBookingContent(
     bookingsInfo: List<BookingsInfoRes>,
+  //  returnStatus: ReturnStatus,
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit
 ) {
     if (bookingsInfo.isEmpty()) {
         Message(message = "No records...")
     } else {
-        DisplayBookingContent(bookingsInfo = bookingsInfo)
+        DisplayBookingContent(
+            bookingsInfo = bookingsInfo
+        )
     }
 }
 
 @Composable
-fun DisplayBookingContent(bookingsInfo: List<BookingsInfoRes>) {
+fun DisplayBookingContent(
+    bookingsInfo: List<BookingsInfoRes>,
+    //returnStatus: ReturnStatus,
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit,
+) {
+
     LazyColumn(
-        contentPadding = PaddingValues(3.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
+        //contentPadding = PaddingValues(3.dp),
+        contentPadding = PaddingValues(bottom = XXXL_PADDING),
+        verticalArrangement = Arrangement.spacedBy(L_PADDING),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -116,20 +136,24 @@ fun DisplayBookingContent(bookingsInfo: List<BookingsInfoRes>) {
                 bookingsInfo::bookingId
             }
         ) { bookingsInfo: BookingsInfoRes ->
-            BookingItem(bookingsInfo = bookingsInfo.toBookingInfo()
+            BookingItem(
+                bookingsInfo = bookingsInfo.toBookingInfo()
             )
         }
     }
 }
 
 @Composable
-fun BookingItem(bookingsInfo: BookingInfo) {
+fun BookingItem(
+    bookingsInfo: BookingInfo,
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit
+) {
     Card(
         border = BorderStroke(width = BIKE_CARD_WIDTH, color = Color.Gray),
         shape = RoundedCornerShape(L_PADDING),
         modifier = Modifier
             .wrapContentSize()
-            .padding(bottom = L_PADDING)
+            //.padding(bottom = L_PADDING)
     ) {
         Column(Modifier
             .padding(M_PADDING)
@@ -309,13 +333,27 @@ fun BookingItem(bookingsInfo: BookingInfo) {
                         textAlign = TextAlign.Center,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Text(
-                        text = bookingsInfo.bikeReturnStatus.name,
-                        fontWeight = FontWeight.ExtraBold,
-                        maxLines = 1,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis
-                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(end = S_PADDING),
+                            onClick = {
+                           // onEditReturnStatusClicked(bookingsInfo.bikeReturnStatus)
+                        }
+                        ) {
+                            Icon(imageVector = Icons.Default.Edit , contentDescription = null)
+                        }
+                        Text(
+                            text = bookingsInfo.bikeReturnStatus.name,
+                            fontWeight = FontWeight.ExtraBold,
+                            maxLines = 1,
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
-import me.ipsum_amet.bikeplace.data.model.BookingInfo
 import me.ipsum_amet.bikeplace.util.M_PADDING
 import me.ipsum_amet.bikeplace.util.RequestState
 import me.ipsum_amet.bikeplace.util.SearchAppBarState
@@ -27,11 +26,12 @@ import me.ipsum_amet.bikeplace.view.home.adminTabs.ReturnedContent
 fun HomeAdminContent(
     searchedBookingInfo: RequestState<BookingsInfoRes?>,
     homeAdminSearchAppBarState: SearchAppBarState,
+    //returnStatus: ReturnStatus,
     bookingsInfo: RequestState<List<BookingsInfoRes>>,
     leasedBookingsInfo: RequestState<List<BookingsInfoRes>>,
     returnedBookingsInfo: RequestState<List<BookingsInfoRes>>,
     tabTitles: List<String>,
-    onEditReturnStatusClicked:() -> Unit
+    //onEditReturnStatusClicked: (ReturnStatus) -> Unit
 ) {
     var tabIndex by remember { mutableStateOf(0) } // 1.
     Column { // 2.
@@ -50,8 +50,12 @@ fun HomeAdminContent(
                 searchedBookingInfo = searchedBookingInfo,
                 searchAppBarState = homeAdminSearchAppBarState
             )
-            1 -> LeasedContent(leasedBookingsInfo = leasedBookingsInfo)
-            2 -> ReturnedContent(returnedBookingsInfo = returnedBookingsInfo)
+            1 -> LeasedContent(
+                leasedBookingsInfo = leasedBookingsInfo
+            )
+            2 -> ReturnedContent(
+                returnedBookingsInfo = returnedBookingsInfo
+            )
         }
     }
 }

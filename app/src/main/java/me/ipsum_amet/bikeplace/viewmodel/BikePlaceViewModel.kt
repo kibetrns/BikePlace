@@ -13,11 +13,11 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ipsum_amet.me.data.remote.dtos.requests.mpesa.EditReturnStatusBookingInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.ipsum_amet.bikeplace.data.dto.response.BookingsInfoRes
-import me.ipsum_amet.bikeplace.data.dto.response.toBookingInfo
 import me.ipsum_amet.bikeplace.data.model.*
 import me.ipsum_amet.bikeplace.util.*
 import javax.inject.Inject
@@ -67,6 +67,17 @@ class BikePlaceViewModel @Inject constructor(
     var bikeSuspension = mutableStateOf(Suspension.HARD_TAIL)
 
     var imageData = mutableStateOf<Uri?>(null)
+
+
+
+    var leaseActivationTitle = mutableStateOf("Start Range")
+    var leaseActivationDateInput = mutableStateOf(getDate())
+    var leaseActivationTimeInput = mutableStateOf(getTime())
+    var leaseExpiryTitle = mutableStateOf("End Range")
+    var leaseExpiryDateInput = mutableStateOf(getDate())
+    var leaseExpiryTimeInput = mutableStateOf(getTime())
+
+    var lineGraphHeaderTitle = mutableStateOf(Pair<Any, Any>("", 1))
 
 
 
@@ -122,6 +133,10 @@ class BikePlaceViewModel @Inject constructor(
 
     val homeAdminSearchAppBarState: MutableState<SearchAppBarState> =
         mutableStateOf(SearchAppBarState.CLOSED)
+
+    val selectedBookingInfoItem: MutableState<BookingInfo?> = mutableStateOf(null)
+
+    val bookingInfoReturnStatus: MutableState<BookingInfo?> = mutableStateOf(null)
 
 
 
@@ -705,6 +720,22 @@ class BikePlaceViewModel @Inject constructor(
                     Log.d("getAllRetBksInfoVM", it.toString())
                     _returnedBookingsInfo.value = RequestState.Success(it)
                 }
+        }
+    }
+
+    fun updateReturnStatusOfBookingInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val editReturnStatusBookingInfo = selectedBookingInfoItem.value?.let {
+                bookingInfoReturnStatus.value?.let { it1 ->
+                    EditReturnStatusBookingInfo(
+                        bookingId = it.bookingId,
+                        bikeReturnStatus = it1.bikeReturnStatus
+                    )
+                }
+            }
+            if (editReturnStatusBookingInfo != null) {
+                repository.updateReturnStatusOfBookingInfo(editReturnStatusBookingInfo)
+            }
         }
     }
 

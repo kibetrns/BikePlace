@@ -30,10 +30,6 @@ fun HomeAdminScreen(
     }
 
 
-
-
-
-
     val allBookingsInfo by bikePlaceViewModel.allBookingsInfoRes.collectAsState()
     val leasedBookingsInfo by bikePlaceViewModel.leasedBookingsInfo.collectAsState()
     val returnedBookingsInfo by bikePlaceViewModel.returnedBookingsInfo.collectAsState()
@@ -43,6 +39,9 @@ fun HomeAdminScreen(
 
     val homeAdminSearchAppBarState by bikePlaceViewModel.homeAdminSearchAppBarState
     val searchReceiptNumber by bikePlaceViewModel.searchReceiptNumber
+
+
+    val selectedBookingInfoItem by bikePlaceViewModel.selectedBookingInfoItem
 
 
 
@@ -58,22 +57,22 @@ fun HomeAdminScreen(
                     bikePlaceViewModel.searchReceiptNumber.value = ""
                 },
                 onSearchClicked = {
-                    bikePlaceViewModel.homeAdminSearchAppBarState.value = SearchAppBarState.TRIGGERED
+                    bikePlaceViewModel.homeAdminSearchAppBarState.value =
+                        SearchAppBarState.TRIGGERED
                     bikePlaceViewModel.getBookingInfoByMpesaReceiptNumber(it)
                 }
             )
         },
         bottomBar = { BottomNavBar(navController = navController) },
-    ) {
-        HomeAdminContent(
-            searchedBookingInfo = searchedBookingInfo,
-            homeAdminSearchAppBarState = homeAdminSearchAppBarState,
-            bookingsInfo = allBookingsInfo,
-            leasedBookingsInfo = leasedBookingsInfo,
-            returnedBookingsInfo = returnedBookingsInfo,
-            tabTitles = tabTitles
-        ) {
-
+        content = {
+            HomeAdminContent(
+                searchedBookingInfo = searchedBookingInfo,
+                homeAdminSearchAppBarState = homeAdminSearchAppBarState,
+                bookingsInfo = allBookingsInfo,
+                leasedBookingsInfo = leasedBookingsInfo,
+                returnedBookingsInfo = returnedBookingsInfo,
+                tabTitles = tabTitles,
+            )
         }
-    }
+    )
 }

@@ -1,14 +1,11 @@
 package me.ipsum_amet.bikeplace.navigation.graphs
 
-import androidx.compose.material.Scaffold
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import me.ipsum_amet.bikeplace.components.BottomNavBar
-import me.ipsum_amet.bikeplace.components.Message
-import me.ipsum_amet.bikeplace.view.home.HomeAppBar
+import me.ipsum_amet.bikeplace.view.statistics.StatScreen
+import me.ipsum_amet.bikeplace.view.statistics.statTabs.SummaryContentView
 import me.ipsum_amet.bikeplace.viewmodel.BikePlaceViewModel
 
 fun NavGraphBuilder.statNavGraph(
@@ -20,16 +17,26 @@ fun NavGraphBuilder.statNavGraph(
         startDestination = StatisticsScreen.Statistics.route
     ) {
         composable(route = StatisticsScreen.Statistics.route) {
-            Scaffold(
-                topBar = { HomeAppBar() },
-                bottomBar = { BottomNavBar(navController = navController) }
-            ) {
-                Message(message = "Statistics Screen")
-            }
+            StatScreen(
+                navController = navController,
+                bikePlaceViewModel = bikePlaceViewModel,
+                navigateToSummaryContentViewScreen = {
+                    navController.navigate(StatisticsScreen.SummaryContentView.route)
+                }
+            )
+        }
+        composable(route = StatisticsScreen.SummaryContentView.route) {
+            SummaryContentView(navigateToPreviousScreen = {
+                navController.navigateUp()
+            })
         }
     }
 
 }
 sealed class StatisticsScreen(val route: String) {
     object Statistics: StatisticsScreen(route = "statistics")
+
+    object SummaryContentView: StatisticsScreen(route = "summaryContentView")
+
+    object TrendingContentView: StatisticsScreen(route = "trendingContentView")
 }
