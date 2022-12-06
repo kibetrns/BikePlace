@@ -11,9 +11,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -35,6 +33,7 @@ fun SummaryContent(
     leaseExpiryTitle: String,
     leaseExpiryDateInput: String,
     leaseExpiryTimeInput: String,
+    //totalAccumulatedAmount: Double,
     modifier: Modifier = Modifier,
     onLeaseActivationDateClicked: (String) -> Unit,
     onLeaseActivationTimeClicked: (String) -> Unit,

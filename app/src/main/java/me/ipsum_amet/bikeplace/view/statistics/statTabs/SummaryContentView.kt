@@ -1,7 +1,6 @@
 package me.ipsum_amet.bikeplace.view.statistics.statTabs
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +20,11 @@ import me.ipsum_amet.bikeplace.util.L_PADDING
 fun SummaryContentView(
     navigateToPreviousScreen: (Action) -> Unit
 ) {
+
+
+
+    //val totalAccumulatedAmount by  bikePlaceViewModel.totalAccumulatedAmount.collectAsState()
+
     Scaffold(
         topBar = {
             PlainAppBar(title = "", navigateToPreviousScreen = { action: Action ->
@@ -35,31 +39,67 @@ fun SummaryContentView(
                 barChartData = BarChartData(
                     bars = listOf(
                         BarChartData.Bar(
-                            label = "Bar 1",
-                            value = 832f,
-                            color = Color.Green
+                            label = "BMX",
+                            value = 12f,
+                            color = Color(0xffdb3a7a)
                         ),
                         BarChartData.Bar(
-                            label = "Bar 2",
+                            label = "CRU.",
                             value = 938f,
-                            color = Color.Yellow
+                            color = Color(0xff676543)
                         ),
                         BarChartData.Bar(
-                            label = "Bar 3",
+                            label = "CYC.",
                             value = 535f,
-                            color = Color.Cyan
+                            color = Color(0xffa2cc58)
                         ),
                         BarChartData.Bar(
-                            label = "Bar 4",
+                            label = "ELE.",
                             value = 100f,
-                            color = Color.Green
+                            color = Color(0xffe40fcd)
+                        ),
+                        BarChartData.Bar(
+                            label = "FOL.",
+                            value = 100f,
+                            color = Color(0xfff2fc65)
+                        ),
+                        BarChartData.Bar(
+                            label = "HYB.",
+                            value = 100f,
+                            color = Color(0xff05ea4e)
+                        ),
+                        BarChartData.Bar(
+                            label = "MOU.",
+                            value = 100f,
+                            color = Color(0xff890313)
+                        ),
+                        BarChartData.Bar(
+                            label = "REC.",
+                            value = 100f,
+                            color = Color(0xffFFA500)
+                        ),
+                        BarChartData.Bar(
+                            label = "ROA.",
+                            value = 100f,
+                            color = Color(0xff13240f)
+                        ),
+                        BarChartData.Bar(
+                            label = "TOU.",
+                            value = 100f,
+                            color = Color(0xff5e3e73)
+                        ),
+                        BarChartData.Bar(
+                            label = "TRA.",
+                            value = 100f,
+                            color = Color(0xffeba5a1)
                         ),
                     )
                 ),
                 // Optional properties.
 
                 modifier = Modifier
-                    .fillMaxSize(0.90f)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.80f)
                     .padding(L_PADDING),
                 animation = simpleChartAnimation(),
                 barDrawer = SimpleBarDrawer(),
@@ -70,3 +110,4 @@ fun SummaryContentView(
         }
     )
 }
+

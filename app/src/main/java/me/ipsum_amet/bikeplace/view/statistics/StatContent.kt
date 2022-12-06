@@ -24,6 +24,7 @@ fun StatisticsContent(
     leaseExpiryDateInput: String,
     leaseExpiryTimeInput: String,
     modifier: Modifier = Modifier,
+    //totalAccumulatedAmount: Double,
     day: String,
     amountMade: Int,
     onLeaseActivationDateClicked: (String) -> Unit,
@@ -93,8 +94,7 @@ fun PStatisticsContent() {
             onLeaseActivationDateClicked = {},
             onLeaseActivationTimeClicked = {},
             onLeaseExpiryDateClicked = {},
-            onLeaseExpiryTimeClicked = {},
-            navigateToSummaryContentViewScreen = {}
-        )
+            onLeaseExpiryTimeClicked = {}
+        ) {}
     }
 }

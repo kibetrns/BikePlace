@@ -26,6 +26,14 @@ fun StatScreen(
     var leaseExpiryDateInput by remember { bikePlaceViewModel.leaseExpiryDateInput }
     var leaseExpiryTimeInput by remember { bikePlaceViewModel.leaseExpiryTimeInput }
 
+    LaunchedEffect(key1 = true,) {
+        bikePlaceViewModel.calculateTotalAmountMadeByBikeCategory()
+    }
+
+
+
+    val totalAccumulatedAmount by  bikePlaceViewModel.totalAccumulatedAmount.collectAsState()
+
     val  (day1, amountMade) =  Pair("Wed", 3532)
 
 
@@ -135,12 +143,8 @@ fun StatScreen(
                 leaseExpiryDateInput = leaseExpiryDateInput,
                 leaseExpiryTimeInput = leaseExpiryTimeInput,
                 modifier = Modifier,
-                amountMade = amountMade,
                 day = day1,
-                lineGraphHeaderTitleSubValues = {
-
-
-                },
+                amountMade = amountMade,
                 onLeaseActivationDateClicked = {
                     datePickerDialog.show()
                     bikePlaceViewModel.leaseActivationDateInput.value = it
@@ -158,7 +162,10 @@ fun StatScreen(
                     bikePlaceViewModel.leaseExpiryTimeInput.value = it
                 },
                 navigateToSummaryContentViewScreen =  navigateToSummaryContentViewScreen
-            )
+            ) {
+
+
+            }
         }
     )
 }

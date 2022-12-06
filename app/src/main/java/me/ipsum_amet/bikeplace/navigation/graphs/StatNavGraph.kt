@@ -21,14 +21,16 @@ fun NavGraphBuilder.statNavGraph(
                 navController = navController,
                 bikePlaceViewModel = bikePlaceViewModel,
                 navigateToSummaryContentViewScreen = {
-                    navController.navigate(StatisticsScreen.SummaryContentView.route)
+                    navController.navigate(StatisticsScreen.SummaryContentView.route) {
+                        popUpTo(StatisticsScreen.Statistics.route)
+                        launchSingleTop = true
+                    }
+
                 }
             )
         }
         composable(route = StatisticsScreen.SummaryContentView.route) {
-            SummaryContentView(navigateToPreviousScreen = {
-                navController.navigateUp()
-            })
+            SummaryContentView { navController.navigateUp() }
         }
     }
 

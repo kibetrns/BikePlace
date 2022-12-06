@@ -138,6 +138,10 @@ class BikePlaceViewModel @Inject constructor(
 
     val bookingInfoReturnStatus: MutableState<BookingInfo?> = mutableStateOf(null)
 
+    private var _totalAccumulatedAmount = MutableStateFlow(0.0)
+    val totalAccumulatedAmount = _totalAccumulatedAmount
+
+
 
 
     init {
@@ -487,6 +491,21 @@ class BikePlaceViewModel @Inject constructor(
                 }
         }
 
+    }
+
+    fun calculateTotalAmountMadeByBikeCategory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllBookingsInfoAsFlow()
+                .map { bikes: List<BookingsInfoRes> ->
+                    bikes.distinctBy { it.bikeType }
+                }
+                .collect { bookingsInfoResList ->
+                    _totalAccumulatedAmount.value =  bookingsInfoResList.sumOf {
+                        it.amount
+                    }
+                    Log.d("calulateAmountByCat", _totalAccumulatedAmount.value.toString())
+            }
+        }
     }
 
     fun getTopChoiceBikes() {
