@@ -19,6 +19,12 @@ fun StatScreen(
     bikePlaceViewModel: BikePlaceViewModel
 ) {
 
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.getAllCalculatedAmountsByCategoryInVM()
+    }
+
+
+
     val leaseActivationTitle by remember { bikePlaceViewModel.leaseActivationTitle}
     var leaseActivationDateInput by remember { bikePlaceViewModel.leaseActivationDateInput }
     var leaseActivationTimeInput by remember { bikePlaceViewModel.leaseActivationTimeInput }
@@ -26,13 +32,83 @@ fun StatScreen(
     var leaseExpiryDateInput by remember { bikePlaceViewModel.leaseExpiryDateInput }
     var leaseExpiryTimeInput by remember { bikePlaceViewModel.leaseExpiryTimeInput }
 
+
+
+/*
     LaunchedEffect(key1 = true,) {
         bikePlaceViewModel.calculateTotalAmountMadeByBikeCategory()
     }
 
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForBMXCategory()
+    }
+
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForCRUISERCategory()
+    }
+
+
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForCYCLOCROSS_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForELECTRIC_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForROAD_RIDECategory()
+    }
+
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForRECUMBENT_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForHYBRID_BIKECategory()
+    }
+
+
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForFOLDING_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForTOURING_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForTRACK_BIKECategory()
+    }
+
+
+
+
+
+ */
 
 
     val totalAccumulatedAmount by  bikePlaceViewModel.totalAccumulatedAmount.collectAsState()
+    val totalAccumulatedAmountBMX by  bikePlaceViewModel.totalAccumulatedAmountBMX.collectAsState()
+    val totalAccumulatedAmountCRUISER by  bikePlaceViewModel.totalAccumulatedAmountCRUISER.collectAsState()
+    val totalAccumulatedAmountCYCLOCROSSBIKE by  bikePlaceViewModel.totalAccumulatedAmountCYCLOCROSSBIKE.collectAsState()
+    val totalAccumulatedAmountELECTRICBIKE by  bikePlaceViewModel.totalAccumulatedAmountELECTRICBIKE.collectAsState()
+    val totalAccumulatedAmountFOLDINGBIKE by  bikePlaceViewModel.totalAccumulatedAmountFOLDINGBIKE.collectAsState()
+    val totalAccumulatedAmountHYBRIDBIKE by  bikePlaceViewModel.totalAccumulatedAmountHYBRIDBIKE.collectAsState()
+    val totalAccumulatedAmountMOUNTAINBIKE by  bikePlaceViewModel.totalAccumulatedAmountMOUNTAINBIKE.collectAsState()
+    val totalAccumulatedAmountRECUMBENTBIKE by  bikePlaceViewModel.totalAccumulatedAmountRECUMBENTBIKE.collectAsState()
+    val totalAccumulatedAmountROADRIDE by  bikePlaceViewModel.totalAccumulatedAmountROADRIDE.collectAsState()
+    val totalAccumulatedAmountTOURINGBIKE by  bikePlaceViewModel.totalAccumulatedAmountTOURINGBIKE.collectAsState()
+    val totalAccumulatedAmountTRACKBIKE by  bikePlaceViewModel.totalAccumulatedAmountTRACKBIKE.collectAsState()
+
 
     val  (day1, amountMade) =  Pair("Wed", 3532)
 
@@ -136,6 +212,18 @@ fun StatScreen(
         },
         content = {
             StatisticsContent(
+                totalAccumulatedAmount = totalAccumulatedAmount,
+                totalAccumulatedAmountBMX = totalAccumulatedAmountBMX,
+                totalAccumulatedAmountCRUISER = totalAccumulatedAmountCRUISER,
+                totalAccumulatedAmountCYCLOCROSSBIKE = totalAccumulatedAmountCYCLOCROSSBIKE,
+                totalAccumulatedAmountELECTRICBIKE = totalAccumulatedAmountELECTRICBIKE,
+                totalAccumulatedAmountFOLDINGBIKE = totalAccumulatedAmountFOLDINGBIKE,
+                totalAccumulatedAmountHYBRIDBIKE = totalAccumulatedAmountHYBRIDBIKE,
+                totalAccumulatedAmountMOUNTAINBIKE = totalAccumulatedAmountMOUNTAINBIKE,
+                totalAccumulatedAmountRECUMBENTBIKE = totalAccumulatedAmountRECUMBENTBIKE,
+                totalAccumulatedAmountROADRIDE = totalAccumulatedAmountROADRIDE,
+                totalAccumulatedAmountTOURINGBIKE = totalAccumulatedAmountTOURINGBIKE,
+                totalAccumulatedAmountTRACKBIKE = totalAccumulatedAmountTRACKBIKE,
                 leaseActivationTitle = leaseActivationTitle,
                 leaseActivationDateInput =  leaseActivationDateInput,
                 leaseActivationTimeInput = leaseActivationTimeInput,
@@ -161,11 +249,12 @@ fun StatScreen(
                     timePickerDialog2.show()
                     bikePlaceViewModel.leaseExpiryTimeInput.value = it
                 },
-                navigateToSummaryContentViewScreen =  navigateToSummaryContentViewScreen
-            ) {
+                navigateToSummaryContentViewScreen =  navigateToSummaryContentViewScreen,
+                lineGraphHeaderTitleSubValues = {},
 
 
-            }
+
+            )
         }
     )
 }

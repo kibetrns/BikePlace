@@ -138,8 +138,46 @@ class BikePlaceViewModel @Inject constructor(
 
     val bookingInfoReturnStatus: MutableState<BookingInfo?> = mutableStateOf(null)
 
+    private val _fetchedBookingInfoResToBeUsedForStats: MutableStateFlow<List<BookingsInfoRes>?> = MutableStateFlow(null)
+    val fetchedBookingInfoResToBeUsedForStats = _fetchedBookingInfoResToBeUsedForStats
+
+
+
     private var _totalAccumulatedAmount = MutableStateFlow(0.0)
     val totalAccumulatedAmount = _totalAccumulatedAmount
+
+    private var _totalAccumulatedAmountBMX = MutableStateFlow(0.0)
+    val totalAccumulatedAmountBMX = _totalAccumulatedAmountBMX
+
+    private var _totalAccumulatedAmountCRUISER = MutableStateFlow(0.0)
+    val totalAccumulatedAmountCRUISER = _totalAccumulatedAmountCRUISER
+
+    private var _totalAccumulatedAmountCYCLOCROSSBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountCYCLOCROSSBIKE = _totalAccumulatedAmountCYCLOCROSSBIKE
+
+    private var _totalAccumulatedAmountELECTRICBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountELECTRICBIKE = _totalAccumulatedAmountELECTRICBIKE
+
+    private var _totalAccumulatedAmountFOLDINGBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountFOLDINGBIKE = _totalAccumulatedAmountFOLDINGBIKE
+
+    private var _totalAccumulatedAmountHYBRIDBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountHYBRIDBIKE = _totalAccumulatedAmountHYBRIDBIKE
+
+    private var _totalAccumulatedAmountMOUNTAINBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountMOUNTAINBIKE = _totalAccumulatedAmountMOUNTAINBIKE
+
+    private var _totalAccumulatedAmountRECUMBENTBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountRECUMBENTBIKE = _totalAccumulatedAmountRECUMBENTBIKE
+
+    private var _totalAccumulatedAmountROADRIDE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountROADRIDE = _totalAccumulatedAmountROADRIDE
+
+    private var _totalAccumulatedAmountTOURINGBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountTOURINGBIKE = _totalAccumulatedAmountTOURINGBIKE
+
+    private var _totalAccumulatedAmountTRACKBIKE = MutableStateFlow(0.0)
+    val totalAccumulatedAmountTRACKBIKE = _totalAccumulatedAmountTRACKBIKE
 
 
 
@@ -151,6 +189,8 @@ class BikePlaceViewModel @Inject constructor(
         currentUser?.uid?.let {
             getUserData(uid = it)
         }
+
+
     }
 
 
@@ -494,19 +534,314 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun calculateTotalAmountMadeByBikeCategory() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getAllBookingsInfoAsFlow()
-                .map { bikes: List<BookingsInfoRes> ->
-                    bikes.distinctBy { it.bikeType }
-                }
-                .collect { bookingsInfoResList ->
-                    _totalAccumulatedAmount.value =  bookingsInfoResList.sumOf {
-                        it.amount
+        try {
+
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
                     }
-                    Log.d("calulateAmountByCat", _totalAccumulatedAmount.value.toString())
+                    .collect { bookingsInfoResList ->
+                        _totalAccumulatedAmount.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                        Log.d("calulateAmountByCat_VM", _totalAccumulatedAmount.value.toString())
+                    }
             }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByCat_VM", it) }
         }
     }
+
+    fun calculateTotalAmountMadeForBMXCategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.BMX
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountBMX.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d("calAmountByMade_BMX_VM", _totalAccumulatedAmountBMX.value.toString())
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByBMX_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForCRUISERCategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.CRUISER
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountCRUISER.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d("calAmountByMade_CRUISER_VM", _totalAccumulatedAmountCRUISER.value.toString())
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByCrui_VM", it) }
+        }
+    }
+    fun calculateTotalAmountMadeForCYCLOCROSS_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.CYCLOCROSS_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountCYCLOCROSSBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_CYCLOCROSS_BIKE_VM",
+                    _totalAccumulatedAmountCYCLOCROSSBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByCyc_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForELECTRIC_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.ELECTRIC_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountELECTRICBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_CYCLOCROSS_ELECTRIC_BIKE_VM",
+                    _totalAccumulatedAmountELECTRICBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByElec_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForFOLDING_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.FOLDING_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountFOLDINGBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_FOLDING_BIKE_VM",
+                    _totalAccumulatedAmountFOLDINGBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByFOL_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForHYBRID_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.HYBRID_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountHYBRIDBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_HYBRID_BIKE_VM",
+                    _totalAccumulatedAmountHYBRIDBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByHyB_VM", it) }
+        }
+    }
+
+
+    fun calculateTotalAmountMadeForMOUNTAIN_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.HYBRID_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountMOUNTAINBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_MOUNTAIN_BIKE_VM",
+                    _totalAccumulatedAmountMOUNTAINBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByMou_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForRECUMBENT_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.RECUMBENT_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountRECUMBENTBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_RECUMBENT_BIKE_VM",
+                    _totalAccumulatedAmountRECUMBENTBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByRec_VM", it) }
+        }
+    }
+
+    fun calculateTotalAmountMadeForROAD_RIDECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.ROAD_RIDE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountROADRIDE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_ROAD_RIDE_VM",
+                    _totalAccumulatedAmountROADRIDE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByRoa_VM", it) }
+
+        }
+    }
+
+    fun calculateTotalAmountMadeForTOURING_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.TOURING_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountTOURINGBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_TOURING_BIKE_VM",
+                    _totalAccumulatedAmountTOURINGBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByTou_VM", it) }
+
+        }
+    }
+
+    fun calculateTotalAmountMadeForTRACK_BIKECategory() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bookingsInfoResList ->
+                        bookingsInfoResList.filter {
+                            it.bikeType == TYPE.TRACK_BIKE
+                        }
+                    }
+                    .collect() { bookingsInfoResList ->
+                        _totalAccumulatedAmountTRACKBIKE.value = bookingsInfoResList.sumOf {
+                            it.amount
+                        }
+                    }
+                Log.d(
+                    "calAmountByMade_TRACK_BIKE_VM",
+                    _totalAccumulatedAmountTRACKBIKE.value.toString()
+                )
+
+            }
+        } catch (ex: Exception) {
+            ex.localizedMessage?.toString()?.let { Log.e("calcAByTra_VM", it) }
+
+        }
+    }
+
+    fun getAllCalculatedAmountsByCategoryInVM() {
+        calculateTotalAmountMadeByBikeCategory()
+        calculateTotalAmountMadeForBMXCategory()
+        calculateTotalAmountMadeForCRUISERCategory()
+        calculateTotalAmountMadeForCYCLOCROSS_BIKECategory()
+        calculateTotalAmountMadeForELECTRIC_BIKECategory()
+        calculateTotalAmountMadeForROAD_RIDECategory()
+        calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
+        calculateTotalAmountMadeForRECUMBENT_BIKECategory()
+        calculateTotalAmountMadeForHYBRID_BIKECategory()
+        calculateTotalAmountMadeForFOLDING_BIKECategory()
+        calculateTotalAmountMadeForTOURING_BIKECategory()
+        calculateTotalAmountMadeForTRACK_BIKECategory()
+
+    }
+
+
 
     fun getTopChoiceBikes() {
         _topBikeChoices.value = RequestState.Loading

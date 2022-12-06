@@ -30,7 +30,12 @@ fun NavGraphBuilder.statNavGraph(
             )
         }
         composable(route = StatisticsScreen.SummaryContentView.route) {
-            SummaryContentView { navController.navigateUp() }
+            SummaryContentView(
+                bikePlaceViewModel = bikePlaceViewModel,
+                navigateToPreviousScreen = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 

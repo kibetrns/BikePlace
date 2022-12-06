@@ -27,6 +27,7 @@ import me.ipsum_amet.bikeplace.util.*
 
 @Composable
 fun SummaryContent(
+
     leaseActivationTitle: String,
     leaseActivationDateInput: String,
     leaseActivationTimeInput: String,

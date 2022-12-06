@@ -21,6 +21,22 @@ fun ListScreen(
 ) {
 
 
+    /*
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForRECUMBENT_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForHYBRID_BIKECategory()
+    }
+
+     */
+
+
     LaunchedEffect(key1 = true) {
         bikePlaceViewModel.getAllBikes()
     }

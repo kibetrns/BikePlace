@@ -17,6 +17,18 @@ import me.ipsum_amet.bikeplace.view.statistics.statTabs.TrendContent
 
 @Composable
 fun StatisticsContent(
+    totalAccumulatedAmount: Double,
+    totalAccumulatedAmountBMX: Double,
+    totalAccumulatedAmountCRUISER: Double,
+    totalAccumulatedAmountCYCLOCROSSBIKE: Double,
+    totalAccumulatedAmountELECTRICBIKE: Double,
+    totalAccumulatedAmountFOLDINGBIKE: Double,
+    totalAccumulatedAmountHYBRIDBIKE: Double,
+    totalAccumulatedAmountMOUNTAINBIKE: Double,
+    totalAccumulatedAmountRECUMBENTBIKE: Double,
+    totalAccumulatedAmountROADRIDE: Double,
+    totalAccumulatedAmountTOURINGBIKE: Double,
+    totalAccumulatedAmountTRACKBIKE: Double,
     leaseActivationTitle: String,
     leaseActivationDateInput: String,
     leaseActivationTimeInput: String,

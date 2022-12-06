@@ -17,6 +17,21 @@ fun HomeScreen(
     bikePlaceViewModel: BikePlaceViewModel,
     navigateToBikeDetailsScreen: (bikeId: String) -> Unit,
     ) {
+    /*
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForCYCLOCROSS_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForELECTRIC_BIKECategory()
+    }
+
+    LaunchedEffect(key1 = true) {
+        bikePlaceViewModel.calculateTotalAmountMadeForROAD_RIDECategory()
+    }
+
+     */
 
     LaunchedEffect(key1 = true, ) {
         bikePlaceViewModel.getTopChoiceBikes()
