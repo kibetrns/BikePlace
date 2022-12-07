@@ -69,7 +69,6 @@ class BikePlaceViewModel @Inject constructor(
     var imageData = mutableStateOf<Uri?>(null)
 
 
-
     var leaseActivationTitle = mutableStateOf("Start Range")
     var leaseActivationDateInput = mutableStateOf(getDate())
     var leaseActivationTimeInput = mutableStateOf(getTime())
@@ -78,8 +77,6 @@ class BikePlaceViewModel @Inject constructor(
     var leaseExpiryTimeInput = mutableStateOf(getTime())
 
     var lineGraphHeaderTitle = mutableStateOf(Pair<Any, Any>("", 1))
-
-
 
 
     val searchAppBarState: MutableState<SearchAppBarState> =
@@ -102,13 +99,16 @@ class BikePlaceViewModel @Inject constructor(
     private val _selectedBike: MutableStateFlow<Bike?> = MutableStateFlow(null)
     val selectedBike: StateFlow<Bike?> = _selectedBike
 
-    private val _topBikeChoices: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    private val _topBikeChoices: MutableStateFlow<RequestState<List<Bike>>> =
+        MutableStateFlow(RequestState.Idle)
     val topBikeChoices: StateFlow<RequestState<List<Bike>>> = _topBikeChoices
 
-    private val _allBikeCategories: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    private val _allBikeCategories: MutableStateFlow<RequestState<List<Bike>>> =
+        MutableStateFlow(RequestState.Idle)
     val allBikeCategories: StateFlow<RequestState<List<Bike>>> = _allBikeCategories
 
-    private val _allBikesByCategory: MutableStateFlow<RequestState<List<Bike>>> = MutableStateFlow(RequestState.Idle)
+    private val _allBikesByCategory: MutableStateFlow<RequestState<List<Bike>>> =
+        MutableStateFlow(RequestState.Idle)
     val allBikesByCategory: StateFlow<RequestState<List<Bike>>> = _allBikesByCategory
 
     val alreadyLoggedIn = mutableStateOf(false)
@@ -116,19 +116,23 @@ class BikePlaceViewModel @Inject constructor(
     var hoursToLease = mutableStateOf("3")
 
 
-    private val _allBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    private val _allBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> =
+        MutableStateFlow(RequestState.Idle)
     val allBookingsInfoRes: StateFlow<RequestState<List<BookingsInfoRes>>> = _allBookingsInfo
 
-    private val _leasedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    private val _leasedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> =
+        MutableStateFlow(RequestState.Idle)
     val leasedBookingsInfo: StateFlow<RequestState<List<BookingsInfoRes>>> = _leasedBookingsInfo
 
-    private val _returnedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> = MutableStateFlow(RequestState.Idle)
+    private val _returnedBookingsInfo: MutableStateFlow<RequestState<List<BookingsInfoRes>>> =
+        MutableStateFlow(RequestState.Idle)
     val returnedBookingsInfo: StateFlow<RequestState<List<BookingsInfoRes>>> = _returnedBookingsInfo
 
 
     val searchReceiptNumber: MutableState<String> = mutableStateOf("")
 
-    private val _searchedBookingInfo: MutableStateFlow<RequestState<BookingsInfoRes?>> = MutableStateFlow(RequestState.Idle)
+    private val _searchedBookingInfo: MutableStateFlow<RequestState<BookingsInfoRes?>> =
+        MutableStateFlow(RequestState.Idle)
     val searchedBookingInfo: StateFlow<RequestState<BookingsInfoRes?>> = _searchedBookingInfo
 
     val homeAdminSearchAppBarState: MutableState<SearchAppBarState> =
@@ -138,9 +142,9 @@ class BikePlaceViewModel @Inject constructor(
 
     val bookingInfoReturnStatus: MutableState<BookingInfo?> = mutableStateOf(null)
 
-    private val _fetchedBookingInfoResToBeUsedForStats: MutableStateFlow<List<BookingsInfoRes>?> = MutableStateFlow(null)
+    private val _fetchedBookingInfoResToBeUsedForStats: MutableStateFlow<List<BookingsInfoRes>?> =
+        MutableStateFlow(null)
     val fetchedBookingInfoResToBeUsedForStats = _fetchedBookingInfoResToBeUsedForStats
-
 
 
     private var _totalAccumulatedAmount = MutableStateFlow(0.0)
@@ -180,8 +184,6 @@ class BikePlaceViewModel @Inject constructor(
     val totalAccumulatedAmountTRACKBIKE = _totalAccumulatedAmountTRACKBIKE
 
 
-
-
     init {
         auth.signOut()
         val currentUser = auth.currentUser
@@ -198,37 +200,37 @@ class BikePlaceViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             inProgress.value = true
             try {
-            db.collection(USERS).whereEqualTo("fullName", fullName.value).get()
-                .addOnSuccessListener { documents: QuerySnapshot ->
-                    if (documents.size() > 0) {
-                        handleException(customMessage = "Name already in use")
-                        inProgress.value = false
-                    } else {
-                        auth.createUserWithEmailAndPassword(emailAddress.value, password.value)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    signedIn.value = true
-                                    createInitialUserProfile()
-                                } else {
-                                    handleException(
-                                        ex = task.exception,
-                                        customMessage = "Registration Failed"
-                                    )
+                db.collection(USERS).whereEqualTo("fullName", fullName.value).get()
+                    .addOnSuccessListener { documents: QuerySnapshot ->
+                        if (documents.size() > 0) {
+                            handleException(customMessage = "Name already in use")
+                            inProgress.value = false
+                        } else {
+                            auth.createUserWithEmailAndPassword(emailAddress.value, password.value)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        signedIn.value = true
+                                        createInitialUserProfile()
+                                    } else {
+                                        handleException(
+                                            ex = task.exception,
+                                            customMessage = "Registration Failed"
+                                        )
+                                    }
+                                    inProgress.value = false
                                 }
-                                inProgress.value = false
-                            }
-                            .addOnFailureListener { ex: Exception ->
-                                ex.message?.let { errorMessage: String ->
-                                    handleException(ex = ex, customMessage = errorMessage)
+                                .addOnFailureListener { ex: Exception ->
+                                    ex.message?.let { errorMessage: String ->
+                                        handleException(ex = ex, customMessage = errorMessage)
+                                    }
                                 }
-                            }
+                        }
                     }
-                }
-                .addOnFailureListener { ex: Exception ->
-                    ex.message?.let { errorMessage: String ->
-                        handleException(ex = ex, customMessage = errorMessage)
+                    .addOnFailureListener { ex: Exception ->
+                        ex.message?.let { errorMessage: String ->
+                            handleException(ex = ex, customMessage = errorMessage)
+                        }
                     }
-                }
             } catch (ex: Exception) {
                 ex.message?.let { handleException(ex = ex, customMessage = it) }
             }
@@ -236,7 +238,7 @@ class BikePlaceViewModel @Inject constructor(
         }
     }
 
-     fun handleException(ex: Exception? = null, customMessage: String = "") {
+    fun handleException(ex: Exception? = null, customMessage: String = "") {
         ex?.printStackTrace()
         val errorMsg = ex?.localizedMessage ?: ""
         val msg = if (customMessage.isEmpty()) errorMsg else "$customMessage $errorMsg"
@@ -393,8 +395,11 @@ class BikePlaceViewModel @Inject constructor(
                     Log.w("getSelectedBikeVM", "Exception Caught: ${ex.message}")
                 }
                 .onCompletion { cause: Throwable? ->
-                    if (cause != null )
-                        Log.d("getSelectedBikeVM", """Flow completed with message "${cause.message}" """)
+                    if (cause != null)
+                        Log.d(
+                            "getSelectedBikeVM",
+                            """Flow completed with message "${cause.message}" """
+                        )
                     else
                         Log.d("getSelectedBikeVM", _selectedBike.value.toString())
                 }
@@ -448,7 +453,7 @@ class BikePlaceViewModel @Inject constructor(
         inProgress.value = false
     }
 
-    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit)   {
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
         inProgress.value = true
         val storageRef = storage.reference
         val uuid = UUID.randomUUID()
@@ -479,7 +484,7 @@ class BikePlaceViewModel @Inject constructor(
                     isBooked = _selectedBike.value?.isBooked,
                     imageUrl = it.toString(),
 
-                )
+                    )
             }
         } catch (ex: Exception) {
             Log.w("main", "Error Updating Bike Details")
@@ -487,7 +492,6 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     private fun refreshBikes() {
-
 
 
     }
@@ -515,12 +519,15 @@ class BikePlaceViewModel @Inject constructor(
                     Log.d("getAllBikesVM", it.toString())
                     Log.d("getAllBikesVM", _allBikes.value.toString())
                 }
-                .catch {  ex ->
+                .catch { ex ->
                     Log.d("getAllBikesVM", "Exception Caught: ${ex.message}")
                 }
                 .onCompletion { cause: Throwable? ->
-                    if (cause != null )
-                        Log.d("getAllBikesVM", """Flow completed with message "${cause.message}" """)
+                    if (cause != null)
+                        Log.d(
+                            "getAllBikesVM",
+                            """Flow completed with message "${cause.message}" """
+                        )
                     else
                         Log.d("getAllBikesVM", _allBikes.value.toString())
                 }
@@ -538,9 +545,12 @@ class BikePlaceViewModel @Inject constructor(
 
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
+                    /*
                     .mapNotNull { bikes: List<BookingsInfoRes> ->
                         bikes.distinctBy { it.bikeType }
                     }
+
+                         */
                     .collect { bookingsInfoResList ->
                         _totalAccumulatedAmount.value = bookingsInfoResList.sumOf {
                             it.amount
@@ -562,6 +572,9 @@ class BikePlaceViewModel @Inject constructor(
                             it.bikeType == TYPE.BMX
                         }
                     }
+                    .catch { ex ->
+                        Log.e("calAmountByMade_BMX_VM", "Exception Caught: ${ex.message}")
+                    }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountBMX.value = bookingsInfoResList.sumOf {
                             it.amount
@@ -579,10 +592,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.CRUISER
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch { ex ->
+                        Log.e("calAmountByMade_CRUISER_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountCRUISER.value = bookingsInfoResList.sumOf {
@@ -596,14 +610,27 @@ class BikePlaceViewModel @Inject constructor(
             ex.localizedMessage?.toString()?.let { Log.e("calcAByCrui_VM", it) }
         }
     }
+
     fun calculateTotalAmountMadeForCYCLOCROSS_BIKECategory() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
+                    /*
                     .mapNotNull { bookingsInfoResList ->
                         bookingsInfoResList.filter {
                             it.bikeType == TYPE.CYCLOCROSS_BIKE
                         }
+                    }
+
+                         */
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch { ex ->
+                        Log.e(
+                            "calAmountByMade_CYCLOCROSS_BIKE_VM",
+                            "Exception Caught: ${ex.message}"
+                        )
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountCYCLOCROSSBIKE.value = bookingsInfoResList.sumOf {
@@ -625,10 +652,14 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.ELECTRIC_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch { ex ->
+                        Log.e(
+                            "calAmountByMade_CYCLOCROSS_ELECTRIC_BIKE_VM",
+                            "Exception Caught: ${ex.message}"
+                        )
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountELECTRICBIKE.value = bookingsInfoResList.sumOf {
@@ -650,10 +681,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.FOLDING_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch { ex ->
+                        Log.e("calAmountByMade_FOLDING_BIKE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountFOLDINGBIKE.value = bookingsInfoResList.sumOf {
@@ -675,10 +707,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.HYBRID_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch { ex ->
+                        Log.e("calAmountByMade_HYBRID_BIKE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountHYBRIDBIKE.value = bookingsInfoResList.sumOf {
@@ -701,35 +734,169 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.HYBRID_BIKE
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType == TYPE.MOUNTAIN_BIKE }
+                        /*
+                        bikes.takeWhile {
+                            it.bikeType == TYPE.MOUNTAIN_BIKE
                         }
+                         */
                     }
-                    .collect() { bookingsInfoResList ->
-                        _totalAccumulatedAmountMOUNTAINBIKE.value = bookingsInfoResList.sumOf {
+                    .catch { ex ->
+                        Log.e("calAmountByMade_MOUNTAIN_BIKE_VM", "Exception Caught: ${ex.message}")
+                    }
+                    /*
+                    .filter {
+                        it.keys == setOf(TYPE.MOUNTAIN_BIKE)
+                    }
+                    .collect() {
+                        _totalAccumulatedAmountMOUNTAINBIKE.value = it.values.sumOf {
+                            it.sumOf {
+                                it.amount
+                            }
+                        }
+
+                         */
+                    .collect() {
+                        _totalAccumulatedAmountMOUNTAINBIKE.value =  it.sumOf {
                             it.amount
                         }
                     }
-                Log.d(
-                    "calAmountByMade_MOUNTAIN_BIKE_VM",
-                    _totalAccumulatedAmountMOUNTAINBIKE.value.toString()
-                )
+            }
+            Log.d(
+                "calAmountByMade_MOUNTAIN_BIKE_VM",
+                _totalAccumulatedAmountMOUNTAINBIKE.value.toString()
+            )
+    } catch (ex: Exception) {
+        ex.localizedMessage?.toString()?.let { Log.e("calcAByMou_VM", it) }
+    }
+}
 
+
+    fun calculateTotalAmountMadeForEachBikeType() {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.getAllBookingsInfoAsFlow()
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.groupBy { it.bikeType }
+                    }
+                    .catch {  ex ->
+                        Log.e("calAmountByMade_ForEachBikeTypes_VM", "Exception Caught: ${ex.message}")
+                    }
+                    .collect() { bookingsInfoResList ->
+                        bookingsInfoResList.mapNotNull {
+                            when(it.key) {
+                                TYPE.TRACK_BIKE ->  _totalAccumulatedAmountMOUNTAINBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.BMX -> _totalAccumulatedAmountBMX.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.CRUISER -> _totalAccumulatedAmountCRUISER.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.CYCLOCROSS_BIKE -> _totalAccumulatedAmountCYCLOCROSSBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.ELECTRIC_BIKE -> _totalAccumulatedAmountELECTRICBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.FOLDING_BIKE -> _totalAccumulatedAmountFOLDINGBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.HYBRID_BIKE -> _totalAccumulatedAmountHYBRIDBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.MOUNTAIN_BIKE -> _totalAccumulatedAmountMOUNTAINBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.RECUMBENT_BIKE -> _totalAccumulatedAmountRECUMBENTBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.ROAD_RIDE -> _totalAccumulatedAmountROADRIDE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                                TYPE.TOURING_BIKE -> _totalAccumulatedAmountTOURINGBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            }
+                            /*
+                            if (it.key == TYPE.MOUNTAIN_BIKE) {
+                                _totalAccumulatedAmountMOUNTAINBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if(it.key == TYPE.BMX) {
+                                _totalAccumulatedAmountBMX.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.CRUISER) {
+                                _totalAccumulatedAmountCRUISER.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.CYCLOCROSS_BIKE) {
+                                _totalAccumulatedAmountCYCLOCROSSBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.ELECTRIC_BIKE) {
+                                _totalAccumulatedAmountELECTRICBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.FOLDING_BIKE) {
+                                _totalAccumulatedAmountFOLDINGBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.HYBRID_BIKE) {
+                                _totalAccumulatedAmountHYBRIDBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.RECUMBENT_BIKE) {
+                                _totalAccumulatedAmountRECUMBENTBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.ROAD_RIDE) {
+                                _totalAccumulatedAmountROADRIDE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.TOURING_BIKE) {
+                                _totalAccumulatedAmountTOURINGBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            } else if (it.key == TYPE.TRACK_BIKE) {
+                                _totalAccumulatedAmountTRACKBIKE.value = it.value.sumOf {
+                                    it.amount
+                                }
+                            }
+                            */
+
+
+                        }
+                    }
             }
         } catch (ex: Exception) {
             ex.localizedMessage?.toString()?.let { Log.e("calcAByMou_VM", it) }
         }
+
+    }
+
+    fun calculateTotalAmountPayedForAllBikesCOmbined() {
+      _totalAccumulatedAmount.value =   _totalAccumulatedAmountBMX.value + totalAccumulatedAmountCRUISER.value +
+              totalAccumulatedAmountCYCLOCROSSBIKE.value + totalAccumulatedAmountELECTRICBIKE.value +
+              totalAccumulatedAmountFOLDINGBIKE.value + totalAccumulatedAmountHYBRIDBIKE.value +
+              totalAccumulatedAmountMOUNTAINBIKE.value + totalAccumulatedAmountRECUMBENTBIKE.value +
+              totalAccumulatedAmountROADRIDE.value + totalAccumulatedAmountTOURINGBIKE.value +
+              totalAccumulatedAmountTRACKBIKE.value
+
     }
 
     fun calculateTotalAmountMadeForRECUMBENT_BIKECategory() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.RECUMBENT_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch {  ex ->
+                        Log.e("calAmountByMade_RECUMBENT_BIKE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountRECUMBENTBIKE.value = bookingsInfoResList.sumOf {
@@ -751,10 +918,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.ROAD_RIDE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch {  ex ->
+                        Log.e("calAmountByMade_ROAD_RIDE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountROADRIDE.value = bookingsInfoResList.sumOf {
@@ -777,10 +945,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.TOURING_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch {  ex ->
+                        Log.e("calAmountByMade_TOURING_BIKE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountTOURINGBIKE.value = bookingsInfoResList.sumOf {
@@ -803,10 +972,11 @@ class BikePlaceViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getAllBookingsInfoAsFlow()
-                    .mapNotNull { bookingsInfoResList ->
-                        bookingsInfoResList.filter {
-                            it.bikeType == TYPE.TRACK_BIKE
-                        }
+                    .mapNotNull { bikes: List<BookingsInfoRes> ->
+                        bikes.distinctBy { it.bikeType }
+                    }
+                    .catch {  ex ->
+                        Log.e("calAmountByMade_TRACK_BIKE_VM", "Exception Caught: ${ex.message}")
                     }
                     .collect() { bookingsInfoResList ->
                         _totalAccumulatedAmountTRACKBIKE.value = bookingsInfoResList.sumOf {
@@ -826,19 +996,22 @@ class BikePlaceViewModel @Inject constructor(
     }
 
     fun getAllCalculatedAmountsByCategoryInVM() {
-        calculateTotalAmountMadeByBikeCategory()
-        calculateTotalAmountMadeForBMXCategory()
-        calculateTotalAmountMadeForCRUISERCategory()
-        calculateTotalAmountMadeForCYCLOCROSS_BIKECategory()
-        calculateTotalAmountMadeForELECTRIC_BIKECategory()
-        calculateTotalAmountMadeForROAD_RIDECategory()
-        calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
-        calculateTotalAmountMadeForRECUMBENT_BIKECategory()
-        calculateTotalAmountMadeForHYBRID_BIKECategory()
-        calculateTotalAmountMadeForFOLDING_BIKECategory()
-        calculateTotalAmountMadeForTOURING_BIKECategory()
-        calculateTotalAmountMadeForTRACK_BIKECategory()
-
+        try {
+            calculateTotalAmountMadeByBikeCategory()
+            calculateTotalAmountMadeForBMXCategory()
+            calculateTotalAmountMadeForCRUISERCategory()
+            calculateTotalAmountMadeForCYCLOCROSS_BIKECategory()
+            calculateTotalAmountMadeForELECTRIC_BIKECategory()
+            calculateTotalAmountMadeForROAD_RIDECategory()
+            calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
+            calculateTotalAmountMadeForRECUMBENT_BIKECategory()
+            calculateTotalAmountMadeForHYBRID_BIKECategory()
+            calculateTotalAmountMadeForFOLDING_BIKECategory()
+            calculateTotalAmountMadeForTOURING_BIKECategory()
+            calculateTotalAmountMadeForTRACK_BIKECategory()
+        } catch (ex: Exception) {
+            ex.localizedMessage?.let { Log.e("getAllCalcAmoByCat_VM", it) }
+        }
     }
 
 
@@ -1020,7 +1193,7 @@ class BikePlaceViewModel @Inject constructor(
                     _allBookingsInfo.value = RequestState.Error(ex)
                 }
                 .collect {
-                    _allBookingsInfo.value = RequestState.Success(it)
+                    _allBookingsInfo.value = RequestState.Success(it.asReversed())
                 }
             /*
             val result = repository.getAllBookingsInfoAsFlow().map { it.toBookingInfo() }
@@ -1051,7 +1224,7 @@ class BikePlaceViewModel @Inject constructor(
                 }
                 .collect {
                     Log.d("getAllLeasBksInfoVM", it.toString())
-                    _leasedBookingsInfo.value = RequestState.Success(it)
+                    _leasedBookingsInfo.value = RequestState.Success(it.asReversed())
                 }
         }
     }
@@ -1072,7 +1245,7 @@ class BikePlaceViewModel @Inject constructor(
                 }
                 .collect {
                     Log.d("getAllRetBksInfoVM", it.toString())
-                    _returnedBookingsInfo.value = RequestState.Success(it)
+                    _returnedBookingsInfo.value = RequestState.Success(it.asReversed())
                 }
         }
     }

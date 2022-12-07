@@ -37,7 +37,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, bikePlaceView
                 },
                 navigateToListScreen = {
                     navController.popBackStack()
-                    navController.navigate(Graph.HOME) {
+                    navController.navigate(Graph.SEARCH) {
                         launchSingleTop = true
                     }
                 },

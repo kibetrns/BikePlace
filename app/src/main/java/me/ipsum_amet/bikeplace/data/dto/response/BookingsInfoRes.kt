@@ -35,7 +35,7 @@ data class BookingsInfoRes(
     val userName: String,
     @SerialName("userPhoneNumber")
     val userPhoneNumber: Long
-)
+) : java.io.Serializable
 fun BookingsInfoRes.toBookingInfo(): BookingInfo {
     return BookingInfo(
         bookingId = bookingId,

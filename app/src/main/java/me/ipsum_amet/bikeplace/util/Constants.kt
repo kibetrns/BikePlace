@@ -27,7 +27,7 @@ const val HOME_SCREEN_ARGUMENT_KEY_2 = "bikeId"
 const val USERS = "users"
 const val BIKES = "bikes"
 
-const val BP_API_BASE_URL = "https://4fdd-105-160-26-230.in.ngrok.io"
+const val BP_API_BASE_URL = "https://5a21-105-161-89-85.in.ngrok.io"
 
 sealed class BPAPIEndpoints(val url: String) {
     object AllBookingsInfo: BPAPIEndpoints(url = "$BP_API_BASE_URL/api/v1/all-bookings-info")

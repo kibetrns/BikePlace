@@ -20,7 +20,9 @@ fun StatScreen(
 ) {
 
     LaunchedEffect(key1 = true) {
-        bikePlaceViewModel.getAllCalculatedAmountsByCategoryInVM()
+        //bikePlaceViewModel.getAllCalculatedAmountsByCategoryInVM()
+        //bikePlaceViewModel.calculateTotalAmountMadeForMOUNTAIN_BIKECategory()
+        bikePlaceViewModel.calculateTotalAmountMadeForEachBikeType()
     }
 
 
