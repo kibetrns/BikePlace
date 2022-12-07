@@ -5,6 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import me.ipsum_amet.bikeplace.data.model.BikeDropOffAddress
 import me.ipsum_amet.bikeplace.data.model.ReturnStatus
+import me.ipsum_amet.bikeplace.data.model.TYPE
 
 @Serializable
 data class BookingsReq(
@@ -18,6 +19,8 @@ data class BookingsReq(
     val bikeLeaseExpiry: LocalDateTime,
     @SerialName("BikeName")
     val bikeName: String,
+    @SerialName("BikeType")
+    val bikeType: TYPE,
     @SerialName("BikeDropOffLocation")
     val bikeDropOffLocation: BikeDropOffAddress?,
     @SerialName("UserName")

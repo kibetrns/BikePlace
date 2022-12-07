@@ -235,6 +235,7 @@ class BikePlaceViewModel @Inject constructor(
             leaseExpiryTimeInput.value
         )
         val bRBikeName   = selectedBike.value?.name
+        val bRBikeType = selectedBike.value?.type
         val bRBikeDropOffLocation = dropOffLocation
         val bRUserName = user.value?.fullName
         val bRUserId = user.value?.userId
@@ -250,6 +251,7 @@ class BikePlaceViewModel @Inject constructor(
                    bikeLeaseActivation = bRBikeLeaseActivation,
                    bikeLeaseExpiry = bRBikeLeaseExpiry,
                    bikeName = bRBikeName!!,
+                   bikeType = bRBikeType!!,
                    bikeDropOffLocation = bRBikeDropOffLocation,
                    userName = bRUserName!!,
                    userId = bRUserId!!,
@@ -1049,7 +1051,7 @@ class BikePlaceViewModel @Inject constructor(
             }?.let { bookingInfoReq: BookingsInfoReq ->
                 Log.d("getAllBokinInfoOfUserVM", bookingInfoReq.toString())
 
-                val result = repository.getAllBikeInfoByUserIdAsFlow(bookingInfoReq)
+                val result = repository.getAllBikeInfoByUserIdAsFlow(bookingInfoReq).asReversed()
 
                 Log.d("getAllBokinInfoOfUserVM", result.toString())
 
